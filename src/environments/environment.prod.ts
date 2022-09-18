@@ -1,3 +1,6 @@
 export const environment = {
-  production: true
+  production: true,
+  appVersion: 'v1.0.00',
+  apiUrl: 'https://api.animetography-blog.com',
+  appThemeName: 'Animetography'
 };

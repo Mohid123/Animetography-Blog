@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  appVersion: 'v1.0.00',
+  apiUrl: 'https://api.animetography-blog.com',
+  appThemeName: 'Animetography'
 };
 
 /*
