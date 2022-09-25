@@ -5,6 +5,7 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { AuthComponent } from './auth.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { BlurhashComponent } from 'src/@core/standalones/blurhash/blurhash.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { RegisterComponent } from './components/register/register.component';
   ],
   imports: [
     CommonModule,
-    AuthRoutingModule
-  ]
+    AuthRoutingModule,
+    BlurhashComponent
+  ],
 })
 export class AuthModule { }
