@@ -168,6 +168,9 @@ module.exports = {
   },
   variants: {
     linearBorderGradients: ['responsive', 'hover', 'dark'], // defaults to ['responsive']
+    extend: {
+      display: ["group-hover"],
+  }
   },
   plugins: [],
 };

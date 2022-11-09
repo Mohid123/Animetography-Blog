@@ -3,10 +3,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient, HttpErrorResponse, HttpEventType, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 import { Observable, of } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
-import { ApiResponse, ErrorCode } from '../@core/models/api-response.model';
+import { ApiResponse, ErrorCode } from '../models/api-response.model';
 
 const headersConfig = {
   'LOCALE': 'en',

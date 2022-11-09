@@ -20,21 +20,76 @@
     </app-blurhash>
     <div class="z-0 flex items-center justify-center w-full px-0 text-center lg:w-1/2 md:px-16" style="background-color: #161616;">
         <app-blurhash [blurHash]="'LIE3C;00?wR%^-M_IVtQ9G-;IUoy'" [imageSrc]="'https://api.animetography-blog.com/api/media-upload/mediaFiles/test/ef950779da65275d8b84fdb54e9a495f.png'" class="absolute inset-0 z-10 items-center bg-gray-500 bg-no-repeat bg-cover lg:hidden">
-            <div class="absolute inset-0 z-0 bg-black opacity-60"></div>
+          <div class="absolute inset-0 z-0 bg-black opacity-60"></div>
         </app-blurhash>
-        <div class="z-20 w-full py-6">
+          <div class="z-20 w-full py-6">
             <form class="w-full px-4 mx-auto sm:w-2/3 lg:px-0" [formGroup]="registerForm">
-              <div class="pt-4 pb-2">
-                <input type="email" name="email" placeholder="Email" class="block w-full p-4 text-lg bg-black rounded-sm">
+              <div class="flex justify-center">
+                <div class="relative w-32 h-32 text-center bg-white rounded-full shadow-lg group">
+                  <div class="mb-4">
+                    <img class="object-cover object-center w-32 h-32 mx-auto duration-700 rounded-full group-hover:opacity-70" [src]="uploadedImage.captureFileURL === '' ? '../../../../assets/avatar.jpg' : uploadedImage.captureFileURL" alt="Avatar Upload" />
+                  </div>
+                  <div *ngIf="(uploadingImage | async)">
+                    <ngx-spinner bdColor="rgba(51,51,51,0.8)" [fullScreen]="false" type="pacman" size="default">
+                      <p class="mt-12 text-white text-xxs">Uploading...</p>
+                    </ngx-spinner>
+                  </div>
+                  <label class="absolute duration-500 opacity-0 cursor-pointer top-1/2 left-4 group-hover:opacity-100">
+                    <span class="px-2 py-1 text-sm leading-normal text-white bg-indigo-500 rounded-full">Select Avatar</span>
+                    <input (change)="onSelectFile($event)" type='file' class="hidden" :multiple="multiple" :accept=".png, .jpg, .jpeg" />
+                  </label>
+                </div>
               </div>
-              <div class="pt-4 pb-2">
-                  <input type="email" name="email" placeholder="Email" class="block w-full p-4 text-lg bg-black rounded-sm">
+              <span class="pb-2 font-semibold text-white text-xxs xl:text-orange-500">Allowed file types are PNG and JPEG</span>
+              <div class="py-2">
+                <input formControlName="firstName" type="text" name="firstName" placeholder="First Name" class="block w-full p-3 text-sm bg-black rounded-sm xl:text-lg" [ngClass]="{'is-invalid': f['firstName'].invalid && f['firstName'].touched,'is-valid': f['firstName'].valid}">
+                <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'required',
+                  message: 'Please provide your first name',
+                  control: f['firstName']
+                }"></ng-container>
               </div>
-              <div class="pt-4 pb-2">
-                  <input class="block w-full p-4 text-lg bg-black rounded-sm" type="password" name="password" placeholder="Password">
+              <div class="py-2">
+                  <input formControlName="lastName" type="text" name="lastName" placeholder="Last Name" class="block w-full p-3 text-sm bg-black rounded-sm xl:text-lg" [ngClass]="{'is-invalid': f['lastName'].invalid && f['lastName'].touched,'is-valid': f['lastName'].valid}">
+                  <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                    validation: 'required',
+                    message: 'Please provide your last name',
+                    control: f['lastName']
+                  }"></ng-container>
+              </div>
+              <div class="py-2">
+                <input formControlName="email" class="block w-full p-3 text-sm bg-black rounded-sm xl:text-lg" type="email" name="email" placeholder="Email" [ngClass]="{'is-invalid': f['email'].invalid && f['email'].touched,'is-valid': f['email'].valid}">
+                <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'required',
+                  message: 'Please provide a valid email address',
+                  control: f['email']
+                }"></ng-container>
+
+                <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'email',
+                  message: 'Please provide a valid email address',
+                  control: f['email']
+                }"></ng-container>
+              </div>
+              <div class="py-2">
+                  <input formControlName="password" class="block w-full p-3 text-sm bg-black rounded-sm xl:text-lg" type="password" name="password" placeholder="Password" [ngClass]="{'is-invalid': f['password'].invalid && f['password'].touched,'is-valid': f['password'].valid}">
+                  <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                    validation: 'required',
+                    message: 'Please set a password for your account',
+                    control: f['password']
+                  }"></ng-container>
+                  <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                    validation: 'minlength',
+                    message: 'Password should be at least 8 characters',
+                    control: f['password']
+                  }"></ng-container>
+              </div>
+              <div class="flex items-center pt-4 pb-2">
+                <input formControlName="isWriter" id="link-checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="link-checkbox" class="ml-2 text-base text-white">I want to write for this blog</label>
               </div>
               <div class="px-4 pt-4 pb-2">
-                  <button class="block w-full p-4 text-lg uppercase bg-indigo-500 rounded-full hover:bg-indigo-600 focus:outline-none">sign in</button>
+                <button (click)="submitProfile()" [ngClass]="registerForm.invalid ? 'opacity-50 cursor-not-allowed': 'opacity-100 cursor-pointer'" [disabled]="registerForm.invalid" class="block w-full p-4 text-sm uppercase bg-indigo-500 rounded-full xl:text-lg hover:bg-indigo-600 focus:outline-none">create account</button>
               </div>
 
               <div class="left-0 right-0 flex justify-center p-4 mt-16 space-x-4 text-center lg:hidden ">
@@ -53,3 +108,14 @@
     </div>
   </section>
 </body>
+
+
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="w-full mt-1 text-left fv-plugins-message-container text-xxs 2xl:text-xs">
+      <span class="text-red-300 fv-help-block text-xxs 2xl:text-xs 2xl:mb-2" role="alert">
+        {{ message }}
+      </span>
+    </div>
+  </ng-container>
+</ng-template>

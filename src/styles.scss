@@ -3,3 +3,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.is-invalid {
+  @apply border-2 border-red-500 border-spacing-1
+}
+
+.is-valid {
+  @apply border-2 border-green-500 border-spacing-1
+}

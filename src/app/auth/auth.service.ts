@@ -9,7 +9,7 @@ import { AuthCredentials } from '../../@core/models/auth-credentials.model';
 import { ApiResponse } from '../../@core/models/api-response.model'
 import { SignInResponse } from '../../@core/models/sign-in-response.model';
 import { User } from '../../@core/models/user.model';
-import { ApiService } from '../../@core/api.service';
+import { ApiService } from '../../@core/common-services/api.service';
 
 type AuthApiData = SignInResponse | any;
 
@@ -61,6 +61,7 @@ export class AuthService extends ApiService<AuthApiData> {
           this.currentUserSubject.next(result?.data?.user);
           return result
         }
+        return result
       }),
       exhaustMap((res)=>{
         if (res?.data?.user) {
@@ -93,7 +94,7 @@ export class AuthService extends ApiService<AuthApiData> {
 
   registration(user: RegisterModel) {
     this.isLoadingSubject.next(true);
-    return this.post('/api/auth/signup',user).pipe(
+    return this.post('/api/auth/signup', user).pipe(
       map((user:ApiResponse<SignInResponse>) => {
         this.isLoadingSubject.next(false);
         return user;
