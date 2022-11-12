@@ -29,12 +29,10 @@
                   <div class="mb-4">
                     <img class="object-cover object-center w-32 h-32 mx-auto duration-700 rounded-full group-hover:opacity-70" [src]="uploadedImage.captureFileURL === '' ? '../../../../assets/avatar.jpg' : uploadedImage.captureFileURL" alt="Avatar Upload" />
                   </div>
-                  <div *ngIf="(uploadingImage | async)">
-                    <ngx-spinner bdColor="rgba(51,51,51,0.8)" [fullScreen]="false" type="pacman" size="default">
-                      <p class="mt-12 text-white text-xxs">Uploading...</p>
-                    </ngx-spinner>
-                  </div>
-                  <label class="absolute duration-500 opacity-0 cursor-pointer top-1/2 left-4 group-hover:opacity-100">
+
+                  <tui-loader [inheritColor]="true" [overlay]="true" class="absolute overflow-visible top-14 left-16" [size]="'m'" [showLoader]="(uploadingImage | async)!"></tui-loader>
+
+                  <label *ngIf="!(uploadingImage | async)" class="absolute duration-500 opacity-0 cursor-pointer top-1/2 left-4 group-hover:opacity-100">
                     <span class="px-2 py-1 text-sm leading-normal text-white bg-indigo-500 rounded-full">Select Avatar</span>
                     <input (change)="onSelectFile($event)" type='file' class="hidden" :multiple="multiple" :accept=".png, .jpg, .jpeg" />
                   </label>

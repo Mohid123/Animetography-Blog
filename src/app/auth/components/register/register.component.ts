@@ -4,9 +4,7 @@ import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { MediaUploadService } from 'src/@core/common-services/media-upload.service';
 import { ApiResponse } from 'src/@core/models/api-response.model';
 import { ResponseAddMedia } from 'src/@core/models/media-upload.model';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from '../../auth.service';
-import { RegisterModel } from '../../models/register.model';
 
 interface profileImage {
   captureFileURL: string,
@@ -31,12 +29,10 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private mediaService: MediaUploadService,
-    private spinner: NgxSpinnerService,
     private authService: AuthService) { }
 
   ngOnInit(): void {
     this.initResgisterForm();
-    this.spinner.show()
   }
 
   initResgisterForm() {

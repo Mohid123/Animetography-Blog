@@ -7,7 +7,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { BlurhashComponent } from 'src/@core/standalones/blurhash/blurhash.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxSpinnerModule } from "ngx-spinner";
+import { TuiLoaderModule } from '@taiga-ui/core';
 
 
 @NgModule({
@@ -21,8 +21,8 @@ import { NgxSpinnerModule } from "ngx-spinner";
     AuthRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    BlurhashComponent,
-    NgxSpinnerModule
+    TuiLoaderModule,
+    BlurhashComponent
   ]
 })
 export class AuthModule { }
