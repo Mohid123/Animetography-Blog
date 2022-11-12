@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { MediaUploadService } from 'src/@core/common-services/media-upload.service';
+import { NotificationsService } from 'src/@core/common-services/notifications.service';
 import { ApiResponse } from 'src/@core/models/api-response.model';
 import { ResponseAddMedia } from 'src/@core/models/media-upload.model';
 import { AuthService } from '../../auth.service';
+import { TuiNotification } from '@taiga-ui/core';
 
 interface profileImage {
   captureFileURL: string,
@@ -29,7 +31,9 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private mediaService: MediaUploadService,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private notif: NotificationsService
+    ) { }
 
   ngOnInit(): void {
     this.initResgisterForm();
@@ -85,12 +89,13 @@ export class RegisterComponent implements OnInit {
         return this.uploadedImage
        }
        else {
-        alert('Something went wrong')
+        this.notif.displayNotification(response.errors[0]?.error?.message, 'An error has occured', TuiNotification.Error)
         return
        }
       })).subscribe((response) => {
         this.f['avatar']?.setValue([response])
         this.uploadingImage$.next(false)
+        this.notif.displayNotification('Image uploaded successfully', 'Success!', TuiNotification.Success)
       })
     }
   }
@@ -98,10 +103,10 @@ export class RegisterComponent implements OnInit {
   submitProfile() {
     this.authService.registration(this.registerForm?.value).subscribe((response: ApiResponse<any>) => {
       if(!response.hasErrors()) {
-        alert('Account creation successful')
+        this.notif.displayNotification('Your account creation was successful', 'Congratulations!', TuiNotification.Success)
       }
       else {
-        alert(response.errors[0]?.error?.message)
+        this.notif.displayNotification(response.errors[0]?.error?.message, 'An error has occured', TuiNotification.Error)
       }
     })
   }
