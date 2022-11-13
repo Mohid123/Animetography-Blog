@@ -7,7 +7,8 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { BlurhashComponent } from 'src/@core/standalones/blurhash/blurhash.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TuiLoaderModule } from '@taiga-ui/core';
+import { TuiLoaderModule, TuiTextfieldControllerModule, TuiButtonModule } from '@taiga-ui/core';
+import {TuiInputPasswordModule, TuiInputModule} from '@taiga-ui/kit';
 
 
 @NgModule({
@@ -22,6 +23,10 @@ import { TuiLoaderModule } from '@taiga-ui/core';
     ReactiveFormsModule,
     FormsModule,
     TuiLoaderModule,
+    TuiInputPasswordModule,
+    TuiInputModule,
+    TuiTextfieldControllerModule,
+    TuiButtonModule,
     BlurhashComponent
   ]
 })

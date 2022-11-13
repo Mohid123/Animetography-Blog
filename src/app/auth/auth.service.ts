@@ -10,6 +10,8 @@ import { ApiResponse } from '../../@core/models/api-response.model'
 import { SignInResponse } from '../../@core/models/sign-in-response.model';
 import { User } from '../../@core/models/user.model';
 import { ApiService } from '../../@core/common-services/api.service';
+import { NotificationsService } from 'src/@core/common-services/notifications.service';
+import { TuiNotification } from '@taiga-ui/core';
 
 type AuthApiData = SignInResponse | any;
 
@@ -38,7 +40,8 @@ export class AuthService extends ApiService<AuthApiData> {
 
   constructor(
     protected override http: HttpClient,
-    private router: Router
+    private router: Router,
+    private notif: NotificationsService
   ) {
     super(http);
     this.isLoadingSubject = new BehaviorSubject<boolean>(false);
@@ -61,11 +64,14 @@ export class AuthService extends ApiService<AuthApiData> {
           this.currentUserSubject.next(result?.data?.user);
           return result
         }
-        return result
+        else {
+          this.notif.displayNotification(result.errors[0]?.error?.message, 'Login Failed!', TuiNotification.Error);
+          throw result.errors[0].error?.message
+        }
       }),
       exhaustMap((res)=>{
         if (res?.data?.user) {
-          return this.get(`/api/user/getUserByID/${res.data.user.id}`)
+          return this.get(`/api/user/getUserByID/${res?.data?.user?.id}`)
         } else {
           return of(null);
         }
@@ -76,8 +82,7 @@ export class AuthService extends ApiService<AuthApiData> {
         }
       }),
       catchError((err) => {
-        console.error('err', err);
-        return of(undefined);
+        throw err
       }),
       finalize(() => this.isLoadingSubject.next(false))
     );
