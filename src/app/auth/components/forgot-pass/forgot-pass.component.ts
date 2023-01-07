@@ -66,16 +66,22 @@ export class ForgotPassComponent implements OnInit, OnDestroy {
       deletedCheck: false
     }
     this.authService.resetPassword(this.f['email']?.value, payload).pipe(takeUntil(this.destroy$)).subscribe((val: ApiResponse<any>) => {
-      if(!val.hasErrors()) {
-        this.isResettingSubject.next(false)
-        this.notif.displayNotification(val.data.message, 'Password reset successfully', TuiNotification.Success)
-        setTimeout(() => {
-          this.router.navigate(['/api/auth/login']);
-        }, 1500)
+      if(val.data && val.data?.message !== "Email does not exist") {
+        if(!val.hasErrors()) {
+          this.isResettingSubject.next(false)
+          this.notif.displayNotification(val.data.message, 'Password reset successfully', TuiNotification.Success)
+          setTimeout(() => {
+            this.router.navigate(['/auth/login']);
+          }, 1500)
+        }
+        else {
+          this.isResettingSubject.next(false)
+          this.notif.displayNotification(val.errors[0]?.error?.message, 'Password reset failed', TuiNotification.Error)
+        }
       }
       else {
         this.isResettingSubject.next(false)
-        this.notif.displayNotification(val.errors[0]?.error?.message, 'Password reset failed', TuiNotification.Error)
+        this.notif.displayNotification("Email does not exist", 'Password reset failed', TuiNotification.Error);
       }
     })
   }

@@ -109,11 +109,7 @@ export class AuthService extends ApiService<AuthApiData> {
   }
 
   resetPassword(email: string, resetPassValue: {password: string, deletedCheck: boolean}): Observable<ApiResponse<any>> {
-    return this.post(`/api/user/resetPassword/${email}`, resetPassValue).pipe(tap((res: ApiResponse<any>) => {
-      if(res.data.message == "Email does not exist") {
-        this.notif.displayNotification(res.data.message, 'Password reset failed', TuiNotification.Error);
-      }
-    }));
+    return this.post(`/api/user/resetPassword/${email}`, resetPassValue);
   }
 
   updateUser(user:User) {
