@@ -9,13 +9,17 @@ import { BlurhashComponent } from 'src/@core/standalones/blurhash/blurhash.compo
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TuiLoaderModule, TuiTextfieldControllerModule, TuiButtonModule } from '@taiga-ui/core';
 import {TuiInputPasswordModule, TuiInputModule} from '@taiga-ui/kit';
+import { ForgotPassComponent } from './components/forgot-pass/forgot-pass.component';
+import { TuiStepperModule } from '@taiga-ui/kit';
+import { TuiMarkerIconModule } from '@taiga-ui/kit';
 
 
 @NgModule({
   declarations: [
     AuthComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ForgotPassComponent
   ],
   imports: [
     CommonModule,
@@ -25,6 +29,8 @@ import {TuiInputPasswordModule, TuiInputModule} from '@taiga-ui/kit';
     TuiLoaderModule,
     TuiInputPasswordModule,
     TuiInputModule,
+    TuiStepperModule,
+    TuiMarkerIconModule,
     TuiTextfieldControllerModule,
     TuiButtonModule,
     BlurhashComponent

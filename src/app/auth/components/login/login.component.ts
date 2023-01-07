@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, first, Observable, Subject, takeUntil } from 'rxjs';
+import { first, Observable, Subject, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
 import { AuthService } from '../../auth.service';
 
@@ -11,7 +11,7 @@ import { AuthService } from '../../auth.service';
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   isSigningIn: Observable<boolean>;
   private destroy$ = new Subject();
@@ -50,6 +50,11 @@ export class LoginComponent implements OnInit {
         this.notif.displayNotification('You have logged in successfully', 'Login Sucess!', TuiNotification.Success)
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 
 }

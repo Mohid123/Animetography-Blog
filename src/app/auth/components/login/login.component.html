@@ -42,18 +42,25 @@
               placeholder="Password"
             />
           </tui-input-password>
-          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-            validation: 'required',
-            message: 'Please provide a password to login',
-            control: f['password']
-          }">
-          </ng-container>
-          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-            validation: 'minlength',
-            message: 'Password should be at least 8 characters',
-            control: f['password']
-          }">
-          </ng-container>
+          <div class="flex justify-between">
+            <div>
+              <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                validation: 'required',
+                message: 'Please provide a password to login',
+                control: f['password']
+              }">
+              </ng-container>
+              <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                validation: 'minlength',
+                message: 'Password should be at least 8 characters',
+                control: f['password']
+              }">
+              </ng-container>
+            </div>
+            <div>
+              <a class="font-semibold text-zinc-300" routerLink="/auth/reset-password">Forgot Password?</a>
+            </div>
+          </div>
         </div>
 
         <div class="flex justify-center pb-4">
@@ -69,6 +76,9 @@
         </button>
         </div>
       </form>
+      <div class="mb-2 text-center">
+        <span class="font-semibold text-white">Don't have an account?</span>&nbsp; <a class="font-semibold text-purple-400" routerLink="/auth/registration">Sign Up</a>
+      </div>
     </div>
 </section>
 
@@ -76,7 +86,7 @@
 <ng-template #formError let-control="control" let-message="message" let-validation="validation">
   <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
     <div class="w-full mt-1 text-left fv-plugins-message-container text-xxs 2xl:text-xs">
-      <span class="font-semibold text-red-600 fv-help-block text-xxs 2xl:text-xs" role="alert">
+      <span class="font-semibold text-red-700 fv-help-block text-xxs 2xl:text-xs" role="alert">
         {{ message }}
       </span>
     </div>

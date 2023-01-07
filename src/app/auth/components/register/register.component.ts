@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, Subject, takeUntil, tap } from 'rxjs';
 import { MediaUploadService } from 'src/@core/common-services/media-upload.service';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
 import { ApiResponse } from 'src/@core/models/api-response.model';
@@ -27,6 +27,7 @@ export class RegisterComponent implements OnInit {
     captureFileURL: '',
     blurHash: ''
   }
+  private destroy$ = new Subject();
 
   constructor(
     private fb: FormBuilder,
@@ -80,7 +81,7 @@ export class RegisterComponent implements OnInit {
     let file = event.target.files[0];
     if(file !== undefined && (file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg')) {
       this.uploadingImage$.next(true)
-      this.mediaService.uploadMedia('images', file).pipe(map((response: ApiResponse<ResponseAddMedia>) => {
+      this.mediaService.uploadMedia('images', file).pipe(takeUntil(this.destroy$), map((response: ApiResponse<ResponseAddMedia>) => {
        if(!response.hasErrors()) {
         this.uploadedImage = {
           captureFileURL: response.data?.url,
@@ -101,7 +102,7 @@ export class RegisterComponent implements OnInit {
   }
 
   submitProfile() {
-    this.authService.registration(this.registerForm?.value).subscribe((response: ApiResponse<any>) => {
+    this.authService.registration(this.registerForm?.value).pipe(takeUntil(this.destroy$)).subscribe((response: ApiResponse<any>) => {
       if(!response.hasErrors()) {
         this.notif.displayNotification('Your account creation was successful', 'Congratulations!', TuiNotification.Success)
       }
@@ -109,6 +110,11 @@ export class RegisterComponent implements OnInit {
         this.notif.displayNotification(response.errors[0]?.error?.message, 'An error has occured', TuiNotification.Error)
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 
 }
