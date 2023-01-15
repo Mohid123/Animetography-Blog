@@ -1,0 +1,29 @@
+<ul #navbar class="px-28 font-[Mukta] py-8 bg-transparent text-white z-50 fixed w-screen sm:block hidden horizontal" (scroll)="onScroll()">
+  <li class="uppercase">Animetography</li>
+  <div class="float-right">
+    <li routerLink="/view-posts" class="mx-5">Home</li>
+    <li class="mx-5">YouTube</li>
+    <li routerLink="/auth/login" class="ml-5">Login</li>
+  </div>
+</ul>
+
+<div class="fixed block top-4 left-4 sm:hidden">
+  <img
+    (click)="toggle(true)"
+    (tuiActiveZoneChange)="toggle($event)"
+    rawSrc="../../../../assets/burger_menu.png"
+    width="42"
+    height="42"
+    class="cursor-pointer invert">
+</div>
+
+<div *tuiSidebar="(open$ | async)!" class="h-screen bg-gradient-to-br from-zinc-900 to-slate-900">
+  <ul class="px-10 font-[Mukta] py-8 text-white vertical">
+    <li class="uppercase">Animetography</li>
+    <div class="py-12">
+      <li routerLink="/view-posts" class="my-5">Home</li>
+      <li class="my-5">YouTube</li>
+      <li class="my-5" routerLink="/auth/login">Login</li>
+    </div>
+  </ul>
+</div>

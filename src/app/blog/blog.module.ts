@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { BlogComponent } from './blog.component';
 import { BlogRoutingModule } from './blog-routing.module';
 import { ViewBlogComponent } from './pages/view-blog/view-blog.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { HeaderComponent } from './components/header/header.component';
+import {TuiSidebarModule} from '@taiga-ui/addon-mobile';
+import {TuiActiveZoneModule} from '@taiga-ui/cdk';
 
 
 
@@ -11,11 +13,14 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
   declarations: [
     BlogComponent,
     ViewBlogComponent,
-    SidebarComponent
+    HeaderComponent
   ],
   imports: [
     CommonModule,
-    BlogRoutingModule
+    BlogRoutingModule,
+    NgOptimizedImage,
+    TuiSidebarModule,
+    TuiActiveZoneModule
   ]
 })
 export class BlogModule { }

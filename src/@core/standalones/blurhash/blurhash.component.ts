@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { decode } from 'blurhash';
 
 @Component({
   selector: 'app-blurhash',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgOptimizedImage],
   templateUrl: './blurhash.component.html',
   styleUrls: ['./blurhash.component.scss']
 })

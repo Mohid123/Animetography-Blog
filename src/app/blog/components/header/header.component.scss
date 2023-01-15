@@ -1,0 +1,11 @@
+.horizontal li {
+  @apply list-none inline-block text-xl cursor-pointer;
+}
+
+.vertical li {
+  @apply list-none text-xl cursor-pointer
+}
+
+.add_bg {
+  @apply bg-gradient-to-l from-neutral-900 to-slate-800 shadow-lg;
+}
