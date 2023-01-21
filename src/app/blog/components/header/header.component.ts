@@ -1,4 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Component({
@@ -11,8 +12,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   @ViewChild('navbar') navbar?: ElementRef<any>;
 
-  open = new BehaviorSubject<boolean>(false);
-  open$ = this.open.asObservable();
+  open = false;
 
   constructor() { }
 
@@ -33,9 +33,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   toggle(open: boolean) {
-    this.open.next(open);
+    this.open = open;
   }
 
 }

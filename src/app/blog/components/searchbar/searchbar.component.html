@@ -1,0 +1,25 @@
+<tui-input
+  [formControl]="searchControl"
+  [tuiTextfieldCleaner]="true"
+  tuiTextfieldIconLeft="tuiIconSearchLarge"
+  *tuiLet="users$ | async as users"
+  [tuiDropdownDirection]="'bottom'"
+>
+  Search by post title
+  <input
+    tuiTextfield
+    type="text"
+  />
+  <ng-container *ngIf="users?.length">
+    <tui-data-list *tuiDataList>
+      <button
+        *ngFor="let user of users"
+        tuiOption
+        [value]="user.toString()"
+        (click)="onSelected(user)"
+      >
+        {{ user }}
+      </button>
+    </tui-data-list>
+  </ng-container>
+</tui-input>

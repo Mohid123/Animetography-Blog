@@ -8,7 +8,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { BlurhashComponent } from 'src/@core/standalones/blurhash/blurhash.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TuiLoaderModule, TuiTextfieldControllerModule, TuiButtonModule } from '@taiga-ui/core';
-import {TuiInputPasswordModule, TuiInputModule} from '@taiga-ui/kit';
+import { TuiInputPasswordModule, TuiInputModule } from '@taiga-ui/kit';
 import { ForgotPassComponent } from './components/forgot-pass/forgot-pass.component';
 import { TuiStepperModule } from '@taiga-ui/kit';
 import { TuiMarkerIconModule } from '@taiga-ui/kit';

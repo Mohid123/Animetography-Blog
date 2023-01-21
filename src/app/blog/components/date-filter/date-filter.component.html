@@ -1,0 +1,26 @@
+<span (tuiActiveZoneChange)="onActiveZone($event)">
+  <button
+    tuiIconButton
+    type="button"
+    icon="tuiIconFilterLarge"
+    appearance="secondary"
+    [tuiDropdown]="dropdownContent"
+    [tuiDropdownManual]="open"
+    [tuiDropdownDirection]="'bottom'"
+    (click)="toggleDropdown()"
+    class="w-10 h-10 sm:w-14 sm:h-14"
+  ></button>
+
+</span>
+
+<ng-template #dropdownContent>
+  <tui-calendar
+    [value]="value"
+    [showAdjacent]="false"
+    [maxViewedMonth]="firstMonth"
+    [month]="firstMonth"
+    [(hoveredItem)]="hoveredItem"
+    (monthChange)="onMonthChangeFirst($event)"
+    (dayClick)="onDayClick($event)"
+  ></tui-calendar>
+</ng-template>
