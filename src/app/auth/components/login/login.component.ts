@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
 import { first, Observable, Subject, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
@@ -16,7 +17,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   isSigningIn: Observable<boolean>;
   private destroy$ = new Subject();
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private notif: NotificationsService) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private notif: NotificationsService,
+    private router: Router
+    ) {
     this.isSigningIn = this.authService.isLoading$
   }
 
@@ -47,7 +53,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.destroy$), first())
     .subscribe((response: any) => {
       if(response) {
-        this.notif.displayNotification('You have logged in successfully', 'Login Sucess!', TuiNotification.Success)
+        this.notif.displayNotification('You have logged in successfully', 'Login Sucess!', TuiNotification.Success);
+        setTimeout(() => {
+          this.router.navigate(['/view-posts']);
+        }, 1500)
       }
     })
   }

@@ -1,8 +1,11 @@
 .top-section {
-  @apply w-screen h-68 sm:h-88 bg-[url('src/assets/navbar_bg.png')] bg-no-repeat bg-cover bg-top;
+  @apply w-screen h-68 sm:h-88 bg-[url('src/assets/navbar_bg.jpg')] bg-no-repeat bg-cover bg-top;
 }
 
 .search-section {
   @apply lg:mx-20 md:mx-10 mx-2 my-5 grid grid-cols-12 gap-2;
 }
 
+.post-section {
+  @apply lg:mx-20 md:mx-10 mx-2 mb-5;
+}

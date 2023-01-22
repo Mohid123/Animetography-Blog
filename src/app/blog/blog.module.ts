@@ -13,6 +13,8 @@ import { TuiDropdownModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
 import { DateFilterComponent } from './components/date-filter/date-filter.component';
 import { TuiButtonModule, TuiCalendarModule, TuiDataListModule } from '@taiga-ui/core/components';
 import { SortComponent } from './components/sort/sort.component';
+import { TopPostComponent } from './components/top-post/top-post.component';
+import { TuiAvatarModule } from '@taiga-ui/kit';
 
 
 
@@ -23,7 +25,8 @@ import { SortComponent } from './components/sort/sort.component';
     HeaderComponent,
     SearchbarComponent,
     DateFilterComponent,
-    SortComponent
+    SortComponent,
+    TopPostComponent
   ],
   imports: [
     CommonModule,
@@ -38,7 +41,8 @@ import { SortComponent } from './components/sort/sort.component';
     TuiDropdownModule,
     TuiCalendarModule,
     TuiDataListModule,
-    TuiLetModule
+    TuiLetModule,
+    TuiAvatarModule
   ]
 })
 export class BlogModule { }

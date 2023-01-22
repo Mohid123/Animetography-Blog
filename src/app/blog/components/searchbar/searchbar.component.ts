@@ -45,7 +45,7 @@ export class SearchbarComponent implements OnInit, OnDestroy {
 
   searchControl = new FormControl();
   destroy$ = new Subject();
-  users$: Observable<any> = of(null)
+  users$: Observable<any> = of([])
   constructor() { }
 
   ngOnInit(): void {
