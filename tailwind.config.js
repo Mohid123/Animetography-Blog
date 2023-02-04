@@ -35,6 +35,7 @@ const extendedSize = {
   100: '25rem',
   116: '29rem',
   104: '28.75rem',
+  108: '27.82rem',
   124: '31rem',
   128: '32rem',
   132: '33rem',

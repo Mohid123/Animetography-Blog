@@ -15,6 +15,7 @@ import { TuiButtonModule, TuiCalendarModule, TuiDataListModule } from '@taiga-ui
 import { SortComponent } from './components/sort/sort.component';
 import { TopPostComponent } from './components/top-post/top-post.component';
 import { TuiAvatarModule } from '@taiga-ui/kit';
+import { BlogPostComponent } from './components/blog-post/blog-post.component';
 
 
 
@@ -26,7 +27,8 @@ import { TuiAvatarModule } from '@taiga-ui/kit';
     SearchbarComponent,
     DateFilterComponent,
     SortComponent,
-    TopPostComponent
+    TopPostComponent,
+    BlogPostComponent
   ],
   imports: [
     CommonModule,

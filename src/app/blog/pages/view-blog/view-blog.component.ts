@@ -8,6 +8,9 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 })
 export class ViewBlogComponent implements OnInit {
 
+  Arr = Array;
+  num: number = 6;
+
   constructor() { }
 
   ngOnInit(): void {
