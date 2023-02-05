@@ -13,11 +13,13 @@
   </div>
 </section>
 
-<section class="post-section">
-  <app-top-post></app-top-post>
-  <div class="grid grid-cols-1 lg:grid-cols-2 1.5xl:grid-cols-3 gap-4 py-5">
-    <ng-container *ngFor="let arr of Arr(num).fill(1)">
-      <app-blog-post></app-blog-post>
-    </ng-container>
-  </div>
-</section>
+<tui-scrollbar class="max-h-full lg:max-h-140 post-section">
+  <section>
+    <app-top-post></app-top-post>
+    <div class="grid grid-cols-1 lg:grid-cols-2 1.5xl:grid-cols-3 gap-4 py-5">
+      <ng-container *ngFor="let arr of Arr(num).fill(1)">
+        <app-blog-post></app-blog-post>
+      </ng-container>
+    </div>
+  </section>
+</tui-scrollbar>

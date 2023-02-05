@@ -3,19 +3,20 @@
   <li class="float-right clear-both">
     <div class="float-right">
       <li routerLink="/view-posts" class="mx-5">Home</li>
+      <li routerLink="/add-posts" class="mx-5">New Post</li>
       <li class="mx-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li>
       <li routerLink="/auth/login" class="ml-5">Login</li>
     </div>
   </li>
 </ul>
 
-<div class="fixed block top-4 left-4 sm:hidden" (tuiActiveZoneChange)="toggle($event)">
+<div class="absolute block top-4 left-4 sm:hidden" (tuiActiveZoneChange)="toggle($event)">
   <img
     (click)="toggle(true)"
     ngSrc="../../../../assets/burger_menu.webp"
     width="42"
     height="42"
-    class="cursor-pointer invert"
+    class="z-50 cursor-pointer invert"
     alt="yummy_burger"
   >
 

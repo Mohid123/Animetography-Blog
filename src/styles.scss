@@ -12,3 +12,7 @@
 .is-valid {
   @apply border-2 border-green-500 border-spacing-1
 }
+
+.top-section {
+  @apply w-screen h-68 sm:h-88 bg-[url('src/assets/navbar_bg.webp')] bg-no-repeat bg-cover bg-top;
+}

@@ -1,0 +1,100 @@
+<section class="top-section">
+  <app-header></app-header>
+  <div class="pt-32 sm:pt-40">
+    <h1 class="z-50 sm:text-4xl text-2xl text-center text-white font-[Mukta]">Storytelling techniques in Animation</h1>
+  </div>
+</section>
+
+<section class="add-section">
+  <h3 class="px-5 pb-4 text-2xl font-semibold text-white">Add New Post</h3>
+  <form [formGroup]="blogPostForm" class="px-5">
+    <div class="pb-3">
+      <tui-input
+      formControlName="blogTitle"
+      [tuiTextfieldCleaner]="true"
+    >
+    Post Title&nbsp;
+    <span class="tui-required"></span>
+    <input
+      tuiTextfield
+      placeholder="Title"
+      type="text"
+    />
+    </tui-input>
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+      validation: 'required',
+      message: 'Please provide a title for the post',
+      control: f['blogTitle']
+    }">
+    </ng-container>
+    </div>
+    <div class="pb-3">
+      <tui-text-area
+      formControlName="blogSubtitle"
+      [tuiTextfieldCleaner]="true"
+      [expandable]="true"
+    >
+    Summary&nbsp;
+    <span class="tui-required"></span>
+    </tui-text-area>
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+      validation: 'required',
+      message: 'Please provide a summary for the post',
+      control: f['blogSubtitle']
+    }">
+    </ng-container>
+    </div>
+    <div class="pb-3">
+      <tui-editor
+        formControlName="blogContent"
+        class="h-80"
+      >
+        Write to your heart's content here!
+      </tui-editor>
+    </div>
+    <div class="pb-3">
+      <tui-input-files
+        class="bg-white rounded-lg"
+        *ngIf="!f['coverImage'].value"
+        accept="image/*"
+        formControlName="coverImage"
+        (reject)="onReject($event)"
+      ></tui-input-files>
+
+      <tui-files class="tui-space_top-1">
+        <tui-file
+          *ngIf="loadedFiles$ | async as file"
+          [file]="file"
+          [showDelete]="f['coverImage'].enabled"
+          (removed)="removeFile()"
+        ></tui-file>
+
+        <tui-file
+          *ngIf="rejectedFiles$ | async as file"
+          state="error"
+          [file]="file"
+          [showDelete]="f['coverImage'].enabled"
+          (removed)="clearRejected()"
+        ></tui-file>
+
+        <tui-file
+          *ngIf="loadingFiles$ | async as file"
+          state="loading"
+          [file]="file"
+          [showDelete]="f['coverImage'].enabled"
+        ></tui-file>
+      </tui-files>
+    </div>
+  </form>
+</section>
+<br>
+
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="w-full mt-1 text-left fv-plugins-message-container text-xxs 2xl:text-xs">
+      <span class="text-xs text-red-600 fv-help-block 2xl:mb-2" role="alert">
+        {{ message }}
+      </span>
+    </div>
+  </ng-container>
+</ng-template>

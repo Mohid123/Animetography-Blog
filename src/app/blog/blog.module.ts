@@ -7,15 +7,16 @@ import { HeaderComponent } from './components/header/header.component';
 import {TuiSidebarModule} from '@taiga-ui/addon-mobile';
 import {TuiActiveZoneModule, TuiLetModule} from '@taiga-ui/cdk';
 import { SearchbarComponent } from './components/searchbar/searchbar.component';
-import { TuiInputModule } from '@taiga-ui/kit';
+import { TuiInputModule, TuiTextAreaModule, TuiAvatarModule, TuiInputFilesModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TuiDropdownModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiDropdownModule, TuiTextfieldControllerModule, TuiScrollbarModule } from '@taiga-ui/core';
 import { DateFilterComponent } from './components/date-filter/date-filter.component';
 import { TuiButtonModule, TuiCalendarModule, TuiDataListModule } from '@taiga-ui/core/components';
 import { SortComponent } from './components/sort/sort.component';
 import { TopPostComponent } from './components/top-post/top-post.component';
-import { TuiAvatarModule } from '@taiga-ui/kit';
 import { BlogPostComponent } from './components/blog-post/blog-post.component';
+import { AddBlogComponent } from './pages/add-blog/add-blog.component';
+import { TuiEditorModule } from '@taiga-ui/addon-editor';
 
 
 
@@ -28,7 +29,8 @@ import { BlogPostComponent } from './components/blog-post/blog-post.component';
     DateFilterComponent,
     SortComponent,
     TopPostComponent,
-    BlogPostComponent
+    BlogPostComponent,
+    AddBlogComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +46,11 @@ import { BlogPostComponent } from './components/blog-post/blog-post.component';
     TuiCalendarModule,
     TuiDataListModule,
     TuiLetModule,
-    TuiAvatarModule
+    TuiAvatarModule,
+    TuiScrollbarModule,
+    TuiTextAreaModule,
+    TuiEditorModule,
+    TuiInputFilesModule
   ]
 })
 export class BlogModule { }
