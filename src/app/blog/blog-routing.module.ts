@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BlogComponent } from './blog.component';
 import { AddBlogComponent } from './pages/add-blog/add-blog.component';
+import { ReadBlogComponent } from './pages/read-blog/read-blog.component';
 import { ViewBlogComponent } from './pages/view-blog/view-blog.component';
 
 const routes: Routes = [
@@ -26,6 +27,10 @@ const routes: Routes = [
         path: 'edit-post/:id',
         component: AddBlogComponent,
       },
+      {
+        path: 'read-post/:id',
+        component: ReadBlogComponent
+      }
     ]
   }
 ];

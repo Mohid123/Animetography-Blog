@@ -16,3 +16,7 @@
 .top-section {
   @apply w-screen h-68 sm:h-88 bg-[url('src/assets/navbar_bg.webp')] bg-no-repeat bg-cover bg-top;
 }
+
+.post-section {
+  @apply lg:mx-20 md:mx-10 mx-2 mb-5 py-4;
+}

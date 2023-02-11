@@ -1,16 +1,18 @@
-<tui-input
+<form class="flex justify-between">
+  <tui-input
   [formControl]="searchControl"
   [tuiTextfieldCleaner]="true"
   tuiTextfieldIconLeft="tuiIconSearchLarge"
   *tuiLet="users$ | async as users"
   [tuiDropdownDirection]="'bottom'"
+  class="w-full mr-2"
 >
   Search by post title
   <input
     tuiTextfield
     type="text"
   />
-  <ng-container *ngIf="users?.length">
+  <!-- <ng-container *ngIf="users?.length">
     <tui-data-list *tuiDataList>
       <button
         *ngFor="let user of users"
@@ -21,5 +23,15 @@
         {{ user }}
       </button>
     </tui-data-list>
-  </ng-container>
-</tui-input>
+  </ng-container> -->
+  </tui-input>
+  <button
+    tuiIconButton
+    type="submit"
+    icon="tuiIconSearchLarge"
+    appearance="secondary"
+    class="w-10 h-10 sm:w-14 sm:h-14"
+    title="Search"
+    (click)="searchItems()"
+  ></button>
+</form>

@@ -48,8 +48,13 @@
       <tui-editor
         formControlName="blogContent"
         class="h-80"
+        (fileAttached)="attach($event)"
+        [tools]="builtInTools"
       >
         Write to your heart's content here!
+        <ng-container ngProjectAs="tools">
+          <youtube-tool tuiItem></youtube-tool>
+        </ng-container>
       </tui-editor>
     </div>
     <div class="pb-3">
