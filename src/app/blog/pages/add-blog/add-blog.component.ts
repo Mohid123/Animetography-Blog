@@ -79,7 +79,19 @@ export class AddBlogComponent implements OnInit {
   readonly rejectedFiles$ = new Subject<TuiFileLike | null>();
   readonly loadingFiles$ = new Subject<TuiFileLike | null>();
   readonly loadedFiles$: Observable<TuiFileLike | null>;
+  activeIndex: number = 0;
+  today = new Date();
 
+  readonly items = [
+    {
+      text: 'Create post',
+      icon: '../../../../assets/add_file.svg',
+    },
+    {
+      text: 'Preview',
+      icon: '../../../../assets/preview.svg',
+    }
+];
 
   readonly builtInTools = [
     TuiEditorTool.Attach,

@@ -32,6 +32,8 @@
     "@taiga-ui/kit": "^3.17.0",
     "@taiga-ui/styles": "^3.17.0",
     "@tinkoff/ng-dompurify": "3.0.0",
+    "@types/animejs": "^3.1.7",
+    "animejs": "^3.2.1",
     "blurhash": "^1.1.5",
     "dompurify": "2.2.9",
     "rxjs": "~7.5.0",

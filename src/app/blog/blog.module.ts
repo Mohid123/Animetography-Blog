@@ -7,9 +7,9 @@ import { HeaderComponent } from './components/header/header.component';
 import {TuiSidebarModule} from '@taiga-ui/addon-mobile';
 import {TuiActiveZoneModule, TuiLetModule} from '@taiga-ui/cdk';
 import { SearchbarComponent } from './components/searchbar/searchbar.component';
-import { TuiInputModule, TuiTextAreaModule, TuiAvatarModule, TuiInputFilesModule } from '@taiga-ui/kit';
+import { TuiInputModule, TuiTextAreaModule, TuiAvatarModule, TuiInputFilesModule, TuiTabsModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { TuiDropdownModule, TuiTextfieldControllerModule, TuiScrollbarModule } from '@taiga-ui/core';
+import { TuiDropdownModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { DateFilterComponent } from './components/date-filter/date-filter.component';
 import { TuiButtonModule, TuiCalendarModule, TuiDataListModule } from '@taiga-ui/core/components';
 import { SortComponent } from './components/sort/sort.component';
@@ -51,11 +51,11 @@ import { ExampleTuiYoutubeToolModule } from './pages/add-blog/youtube-tool/youtu
     TuiDataListModule,
     TuiLetModule,
     TuiAvatarModule,
-    TuiScrollbarModule,
     TuiTextAreaModule,
     TuiEditorModule,
     TuiInputFilesModule,
-    ExampleTuiYoutubeToolModule
+    ExampleTuiYoutubeToolModule,
+    TuiTabsModule
   ]
 })
 export class BlogModule { }

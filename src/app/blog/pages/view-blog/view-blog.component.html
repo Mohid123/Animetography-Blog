@@ -1,7 +1,7 @@
 <section class="top-section">
   <app-header></app-header>
   <div class="pt-32 sm:pt-40">
-    <h1 class="z-50 sm:text-4xl text-2xl text-center text-white font-[Mukta]">Storytelling techniques in Animation</h1>
+    <h1 #textContent class="z-50 sm:text-4xl text-2xl text-center text-white font-[Mukta] ml2">Storytelling in Animation</h1>
   </div>
 </section>
 
@@ -13,13 +13,12 @@
   </div>
 </section>
 
-<tui-scrollbar class="max-h-full lg:max-h-140 post-section">
-  <section>
-    <app-top-post></app-top-post>
-    <div class="grid grid-cols-1 lg:grid-cols-2 1.5xl:grid-cols-3 gap-4 py-5">
-      <ng-container *ngFor="let arr of Arr(num).fill(1)">
-        <app-blog-post></app-blog-post>
-      </ng-container>
-    </div>
-  </section>
-</tui-scrollbar>
+<section class="post-section">
+  <app-top-post></app-top-post>
+  <div class="grid grid-cols-1 lg:grid-cols-2 1.5xl:grid-cols-3 gap-4 py-5">
+    <ng-container *ngFor="let arr of Arr(num).fill(1)">
+      <app-blog-post></app-blog-post>
+    </ng-container>
+  </div>
+</section>
+
