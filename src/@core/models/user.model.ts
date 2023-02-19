@@ -8,6 +8,7 @@ export class User {
   avatar!: Avatar[];
   deletedCheck!: boolean;
   isAdmin!: boolean;
+  isWriter!: boolean;
 }
 
 export interface Avatar {

@@ -1,11 +1,12 @@
-<ul #navbar class="px-28 font-[Mukta] py-8 bg-transparent text-white z-50 fixed w-screen 1.5sm:block hidden horizontal" (scroll)="onScroll()">
+<ul #navbar class="md:px-28 font-[Mukta] py-8 bg-transparent text-white z-50 fixed w-screen 1.5sm:block hidden horizontal 1.5sm:px-24" (scroll)="onScroll()">
   <li class="uppercase">Animetography</li>
   <li class="float-right clear-both">
     <div class="float-right">
       <li routerLink="/view-posts" class="mx-5">Home</li>
       <li routerLink="/add-posts" class="mx-5">New Post</li>
       <li class="mx-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li>
-      <li routerLink="/auth/login" class="ml-5">Login</li>
+      <li *ngIf="loginState === false" routerLink="/auth/login" class="ml-5 font-semibold text-purple-400">Login</li>
+      <li (click)="showDialog(template)" *ngIf="loginState === true" class="ml-5 font-semibold text-rose-600">Logout</li>
     </div>
   </li>
 </ul>
@@ -27,8 +28,39 @@
           <li routerLink="/view-posts" class="my-5">Home</li>
           <li routerLink="/add-posts" class="my-5">New Post</li>
           <li class="my-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li>
-          <li routerLink="/auth/login" class="my-5">Login</li>
+          <li *ngIf="loginState === false" routerLink="/auth/login" class="my-10">Login</li>
+          <li (click)="showDialog(template)" *ngIf="loginState === true" class="my-10">Logout</li>
         </div>
       </ul>
     </div>
 </div>
+
+<ng-template
+  #template
+  let-observer
+>
+  <div class="dialog-header">
+    <h3>Are you sure you want to logout?</h3>
+  </div>
+  <div class="dialog-content">
+    <button
+    tuiButton
+    type="button"
+    appearance="secondary-destructive"
+    size="m"
+    class="tui-space_right-3"
+    (click)="observer.complete()"
+  >
+    On second thought...
+  </button>
+  <button
+    tuiButton
+    type="button"
+    appearance="secondary"
+    size="m"
+    (click)="observer.complete(); logoutUser();"
+  >
+    Do It!
+  </button>
+  </div>
+</ng-template>
