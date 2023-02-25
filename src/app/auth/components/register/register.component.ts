@@ -7,6 +7,7 @@ import { ApiResponse } from 'src/@core/models/api-response.model';
 import { ResponseAddMedia } from 'src/@core/models/media-upload.model';
 import { AuthService } from '../../auth.service';
 import { TuiNotification } from '@taiga-ui/core';
+import { Router } from '@angular/router';
 
 interface profileImage {
   captureFileURL: string,
@@ -28,12 +29,15 @@ export class RegisterComponent implements OnInit {
     blurHash: ''
   }
   private destroy$ = new Subject();
+  isRegistering = new BehaviorSubject(false);
+  isRegistering$: Observable<boolean> = this.isRegistering.asObservable();
 
   constructor(
     private fb: FormBuilder,
     private mediaService: MediaUploadService,
     private authService: AuthService,
-    private notif: NotificationsService
+    private notif: NotificationsService,
+    private router: Router
     ) { }
 
   ngOnInit(): void {
@@ -102,12 +106,15 @@ export class RegisterComponent implements OnInit {
   }
 
   submitProfile() {
+    this.isRegistering.next(true)
     this.authService.registration(this.registerForm?.value).pipe(takeUntil(this.destroy$)).subscribe((response: ApiResponse<any>) => {
       if(!response.hasErrors()) {
-        this.notif.displayNotification('Your account creation was successful', 'Congratulations!', TuiNotification.Success)
+        this.notif.displayNotification('Your account creation was successful', 'Congratulations!', TuiNotification.Success);
+        this.isRegistering.next(false);
       }
       else {
-        this.notif.displayNotification(response.errors[0]?.error?.message, 'An error has occured', TuiNotification.Error)
+        this.notif.displayNotification(response.errors[0]?.error?.message, 'An error has occured', TuiNotification.Error);
+        this.isRegistering.next(false);
       }
     })
   }

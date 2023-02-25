@@ -12,6 +12,7 @@ import { TuiInputPasswordModule, TuiInputModule } from '@taiga-ui/kit';
 import { ForgotPassComponent } from './components/forgot-pass/forgot-pass.component';
 import { TuiStepperModule } from '@taiga-ui/kit';
 import { TuiMarkerIconModule } from '@taiga-ui/kit';
+import { EmailConfirmComponent } from './components/email-confirm/email-confirm.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { TuiMarkerIconModule } from '@taiga-ui/kit';
     AuthComponent,
     LoginComponent,
     RegisterComponent,
-    ForgotPassComponent
+    ForgotPassComponent,
+    EmailConfirmComponent
   ],
   imports: [
     CommonModule,
