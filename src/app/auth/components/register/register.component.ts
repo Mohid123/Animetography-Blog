@@ -109,7 +109,12 @@ export class RegisterComponent implements OnInit {
     this.isRegistering.next(true)
     this.authService.registration(this.registerForm?.value).pipe(takeUntil(this.destroy$)).subscribe((response: ApiResponse<any>) => {
       if(!response.hasErrors()) {
-        this.notif.displayNotification('Your account creation was successful', 'Congratulations!', TuiNotification.Success);
+        if(this.registerForm.controls['isWriter'].value === true) {
+          this.notif.displayNotification('A confirmation link has been sent to your email address. Please follow the link to verify your email', 'Confirm your Email!', TuiNotification.Success);
+        }
+        else {
+          this.notif.displayNotification('Your account creation was successful', 'Congratulations!', TuiNotification.Success);
+        }
         this.isRegistering.next(false);
       }
       else {
