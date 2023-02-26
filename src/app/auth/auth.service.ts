@@ -124,7 +124,7 @@ export class AuthService extends ApiService<AuthApiData> {
   }
 
   sendConfirmationRequest(id: string): Observable<ApiResponse<any>> {
-    return this.post(`/api/auth/confirmEmail`, id);
+    return this.post(`/api/auth/confirmEmail`, {id: id});
   }
 
 }
