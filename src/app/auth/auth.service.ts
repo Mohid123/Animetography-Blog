@@ -119,4 +119,12 @@ export class AuthService extends ApiService<AuthApiData> {
     }
   }
 
+  getUserById(userID: string): Observable<ApiResponse<User>> {
+    return this.get(`/api/user/getUserByID/${userID}`);
+  }
+
+  sendConfirmationRequest(id: string): Observable<ApiResponse<any>> {
+    return this.post(`/api/auth/confirmEmail`, id);
+  }
+
 }

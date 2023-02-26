@@ -9,6 +9,7 @@ export class User {
   deletedCheck!: boolean;
   isAdmin!: boolean;
   isWriter!: boolean;
+  isVerified!: boolean;
 }
 
 export interface Avatar {
