@@ -19,6 +19,7 @@ export class EmailConfirmComponent implements OnInit, OnDestroy {
   confirmRequest$ = this.confirmRequest.asObservable();
   confirmationText = new BehaviorSubject('');
   confirmationText$ = this.confirmationText.asObservable();
+  userPayload!: User;
 
   constructor(private activatedRoute: ActivatedRoute, private auth: AuthService, private notif: NotificationsService) {}
 
@@ -32,6 +33,7 @@ export class EmailConfirmComponent implements OnInit, OnDestroy {
         this.auth.getUserById(val['id']).pipe(takeUntil(this.destroy$))
         .subscribe((res: ApiResponse<User>) => {
           if(!res.hasErrors()) {
+            this.userPayload = res.data;
             if(res.data.isVerified === true) {
               this.confirmationText.next('Your account has already been verified!')
             }
@@ -45,7 +47,7 @@ export class EmailConfirmComponent implements OnInit, OnDestroy {
     this.confirmRequest.next(true);
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val['id'] && val['token']) {
-        this.auth.sendConfirmationRequest(val['id']).pipe(takeUntil(this.destroy$))
+        this.auth.sendConfirmationRequest(val['id'], this.userPayload).pipe(takeUntil(this.destroy$))
         .subscribe((res: ApiResponse<any>) => {
           if(!res.hasErrors()) {
             this.confirmRequest.next(false);
