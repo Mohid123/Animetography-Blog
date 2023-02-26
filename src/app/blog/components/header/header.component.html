@@ -3,7 +3,7 @@
   <li class="float-right clear-both">
     <div class="float-right">
       <li routerLink="/view-posts" class="mx-5">Home</li>
-      <li routerLink="/add-posts" class="mx-5">New Post</li>
+      <li *ngIf="writerAccess === true" routerLink="/add-posts" class="mx-5">New Post</li>
       <li class="mx-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li>
       <li *ngIf="loginState === false" routerLink="/auth/login" class="ml-5 font-semibold text-purple-400">Login</li>
       <li (click)="showDialog(template)" *ngIf="loginState === true" class="ml-5 font-semibold text-rose-600">Logout</li>

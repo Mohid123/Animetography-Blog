@@ -15,11 +15,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   open = false;
   loginState = false;
+  writerAccess = false;
 
   constructor(private auth: AuthService, @Inject(TuiDialogService) private readonly dialogService: TuiDialogService) { }
 
   ngOnInit(): void {
-    this.checkLoginState()
+    this.checkWriterStatus();
+    this.checkLoginState();
   }
 
   ngAfterViewInit(): void {
@@ -45,6 +47,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       return this.loginState = true;
     }
     return this.loginState = false;
+  }
+
+  checkWriterStatus() {
+    if(this.auth.currentUserValue?.isVerified === true && this.auth.currentUserValue?.isWriter === true) {
+      return this.writerAccess = true
+    }
+    return this.writerAccess = false;
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>): void {
