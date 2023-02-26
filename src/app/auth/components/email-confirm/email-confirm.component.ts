@@ -47,6 +47,8 @@ export class EmailConfirmComponent implements OnInit, OnDestroy {
     this.confirmRequest.next(true);
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val['id'] && val['token']) {
+        this.userPayload.isVerified = true;
+        this.userPayload.isWriter = true;
         this.auth.sendConfirmationRequest(val['id'], this.userPayload).pipe(takeUntil(this.destroy$))
         .subscribe((res: ApiResponse<any>) => {
           if(!res.hasErrors()) {
