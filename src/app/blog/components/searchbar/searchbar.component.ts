@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, Output, EventEmitter, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { TUI_DEFAULT_MATCHER } from '@taiga-ui/cdk';
-import { Subject, takeUntil, debounceTime, map, Observable, of } from 'rxjs';
+import { Subject, takeUntil, debounceTime, switchMap, Observable, of, filter } from 'rxjs';
+import { BlogService } from '../../services/blog.service';
 @Component({
   selector: 'app-searchbar',
   templateUrl: './searchbar.component.html',
@@ -12,33 +12,46 @@ export class SearchbarComponent implements OnInit, OnDestroy {
 
   searchControl = new FormControl();
   destroy$ = new Subject();
-  users$: Observable<any> = of([])
-  constructor() { }
+  posts$: Observable<any> = of([]);
+  @Output() postID = new EventEmitter();
+  setPostID: string = '';
+  showSpinner$: Observable<boolean> = this.blogService.showSpinner.asObservable();
+
+  constructor(private blogService: BlogService) { }
 
   ngOnInit(): void {
-    // this.searchPosts()
+    this.searchPosts();
+    this.blogService.clearInput.pipe(takeUntil(this.destroy$)).subscribe(val => this.searchControl!.setValue(val))
   }
 
-  searchItems() {
-    console.log("clicked")
+  fetchPostByID(id: string) {
+    id = this.setPostID;
+    if(id.trim().length > 0) {
+      this.postID.emit(id);
+    }
+    else {
+      return
+    }
   }
 
-  // searchPosts() {
-  //   this.users$ = this.searchControl.valueChanges
-  //   .pipe(
-  //     takeUntil(this.destroy$),
-  //     debounceTime(400),
-  //     map(val => USERS.filter(user => TUI_DEFAULT_MATCHER(user, val)))
-  //   )
-  // }
+  searchPosts() {
+    this.posts$ = this.searchControl.valueChanges
+    .pipe(
+      takeUntil(this.destroy$),
+      debounceTime(400),
+      filter(((val: string) => val.trim().length > 0)),
+      switchMap((val => this.blogService.searchPostsByTitle(val.toString())))
+    );
+  }
 
-  // onSelected(user: User): void {
-  //   this.searchControl!.setValue(user.toString());
-  // }
+  onSelected(blog: any): void {
+    this.searchControl!.setValue(blog.blogTitle);
+    this.setPostID = blog._id;
+  }
 
   ngOnDestroy(): void {
-    // this.destroy$.complete();
-    // this.destroy$.unsubscribe();
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 
 }

@@ -1,37 +1,37 @@
 <form class="flex justify-between">
   <tui-input
-  [formControl]="searchControl"
-  [tuiTextfieldCleaner]="true"
-  tuiTextfieldIconLeft="tuiIconSearchLarge"
-  *tuiLet="users$ | async as users"
-  [tuiDropdownDirection]="'bottom'"
-  class="w-full mr-2"
->
-  Search by post title
+    [formControl]="searchControl"
+    [tuiTextfieldCleaner]="true"
+    tuiTextfieldIconLeft="tuiIconSearchLarge"
+    *tuiLet="(posts$ | async)?.data as posts"
+    [tuiDropdownDirection]="'bottom'"
+    class="w-full mr-2"
+  >
+    Search by post title
   <input
     tuiTextfield
     type="text"
   />
-  <!-- <ng-container *ngIf="users?.length">
-    <tui-data-list *tuiDataList>
-      <button
-        *ngFor="let user of users"
-        tuiOption
-        [value]="user.toString()"
-        (click)="onSelected(user)"
-      >
-        {{ user }}
-      </button>
-    </tui-data-list>
-  </ng-container> -->
+  <tui-data-list *tuiDataList>
+    <button
+      *ngFor="let post of posts"
+      tuiOption
+      [value]="post.blogTitle"
+      (click)="onSelected(post)"
+    >
+      {{ post.blogTitle }}
+    </button>
+  </tui-data-list>
+
   </tui-input>
   <button
     tuiIconButton
+    [showLoader]="(showSpinner$ | async)!"
     type="submit"
     icon="tuiIconSearchLarge"
     appearance="secondary"
     class="w-14 h-14"
     title="Search"
-    (click)="searchItems()"
+    (click)="fetchPostByID('')"
   ></button>
 </form>

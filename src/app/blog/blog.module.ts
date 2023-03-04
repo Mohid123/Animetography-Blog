@@ -19,6 +19,9 @@ import { AddBlogComponent } from './pages/add-blog/add-blog.component';
 import { TuiEditorModule } from '@taiga-ui/addon-editor';
 import { ReadBlogComponent } from './pages/read-blog/read-blog.component';
 import { ExampleTuiYoutubeToolModule } from './pages/add-blog/youtube-tool/youtube-tool.module';
+import { BlurhashComponent } from 'src/@core/standalones/blurhash/blurhash.component';
+import { TopPostSkeletonComponent } from 'src/@core/standalones/top-post-skeleton/top-post-skeleton.component';
+import { BlogPostSkeletonComponent } from 'src/@core/standalones/blog-post-skeleton/blog-post-skeleton.component';
 
 
 
@@ -55,7 +58,10 @@ import { ExampleTuiYoutubeToolModule } from './pages/add-blog/youtube-tool/youtu
     TuiEditorModule,
     TuiInputFilesModule,
     ExampleTuiYoutubeToolModule,
-    TuiTabsModule
+    TuiTabsModule,
+    BlurhashComponent,
+    TopPostSkeletonComponent,
+    BlogPostSkeletonComponent
   ]
 })
 export class BlogModule { }

@@ -1,2 +1,11 @@
-<canvas *ngIf="isBrowser" #canvas [width]="canvasWidth" [height]="canvasHeight"></canvas>
-<img alt="blurred-image" width="500" height="500" [attr.loading]="loading" [ngSrc]="imageSrc" (load)="imageLoad = true" (onloadeddata)="imageLoaded = true" [class.img-loaded]="imageLoad">
+<canvas [ngClass]="customClass" *ngIf="isBrowser" #canvas [width]="canvasWidth" [height]="canvasHeight"></canvas>
+<img
+  alt="blurred-image"
+  [width]="width || 100"
+  [height]="height || 100"
+  [ngSrc]="imageSrc"
+  (load)="imageLoad = true"
+  (onloadeddata)="imageLoaded = true"
+  [class.img-loaded]="imageLoad"
+>
+

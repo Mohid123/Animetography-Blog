@@ -6,7 +6,7 @@
 </section>
 
 <section class="search-section">
-  <app-searchbar class="col-span-12 lg:col-span-10 md:col-span-8"></app-searchbar>
+  <app-searchbar (postID)="fetchPostById($event)" class="col-span-12 lg:col-span-10 md:col-span-8"></app-searchbar>
   <div class="flex justify-end col-span-12 py-2 sm:py-0 sm:inline-block lg:col-span-2 md:col-span-4">
     <app-date-filter></app-date-filter>
     <app-sort class="mx-3"></app-sort>
@@ -14,10 +14,52 @@
 </section>
 
 <section class="post-section">
-  <app-top-post></app-top-post>
+  <ng-container *ngFor="let post of (posts$ | async)?.data.slice(0, 1); let i = index; trackBy: trackByFn">
+    <ng-container *ngIf="!(showSpinner$ | async)">
+      <app-top-post
+        [postTitle]="post?.blogTitle"
+        [postSubtitle]="post?.blogSubtitle"
+        [author]="post?.author"
+        [createdAt]="post?.createdAt"
+        [coverImage]="post?.coverImage[0]?.captureFileURL ?? '../../../../assets/login_bg.webp'"
+        [blurhash]="post?.coverImage[0]?.blurHash"
+      >
+      </app-top-post>
+      <div *ngIf="isSearched$ | async" class="flex justify-end py-3">
+        <button
+          tuiButton
+          type="button"
+          class="text-xs"
+          (click)="clearSearch()"
+          appearance="accent"
+          size="s"
+        >
+          Clear Search
+        </button>
+      </div>
+    </ng-container>
+  </ng-container>
+  <app-top-post-skeleton *ngIf="(showSpinner$ | async)"></app-top-post-skeleton>
+
   <div class="grid grid-cols-1 lg:grid-cols-2 1.5xl:grid-cols-3 gap-4 py-5">
-    <ng-container *ngFor="let arr of Arr(num).fill(1)">
-      <app-blog-post></app-blog-post>
+    <ng-container *ngFor="let post of (posts$ | async)?.data; let i = index; trackBy: trackByFn;">
+      <ng-container *ngIf="!(showSpinner$ | async)">
+        <app-blog-post
+          *ngIf="i > 0"
+          [postTitle]="post?.blogTitle"
+          [postSubtitle]="post?.blogSubtitle"
+          [author]="post?.author"
+          [createdAt]="post?.createdAt"
+          [coverImage]="post?.coverImage[0]?.captureFileURL ?? '../../../../assets/login_bg.webp'"
+          [blurhash]="post?.coverImage[0]?.blurHash"
+        >
+        </app-blog-post>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="(showSpinner$ | async)">
+      <ng-container *ngFor="let arr of Arr(3).fill(1)">
+        <app-blog-post-skeleton class=""></app-blog-post-skeleton>
+      </ng-container>
     </ng-container>
   </div>
 </section>

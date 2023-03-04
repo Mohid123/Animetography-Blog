@@ -32,6 +32,10 @@ export class BlurhashComponent implements AfterViewInit {
 
   @Input() loading: string = 'eager';
   @Input() first: boolean = false;
+  @Input() width!: number;
+  @Input() height!: number;
+  @Input() customClass!: string
+  @Input() mainClass!: string
 
 
   public imageLoaded = false;
