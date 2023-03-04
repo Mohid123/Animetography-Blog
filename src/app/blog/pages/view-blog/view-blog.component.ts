@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable, map, BehaviorSubject } from 'rxjs';
-import { ApiResponse } from 'src/@core/models/api-response.model';
 import { BlogPost, PostData } from '../../models/blog.interface';
 import { BlogService } from '../../services/blog.service';
 
@@ -10,7 +9,7 @@ import { BlogService } from '../../services/blog.service';
   styleUrls: ['./view-blog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ViewBlogComponent implements OnInit {
+export class ViewBlogComponent {
   offset: number = 0;
   limit: number = 7;
   page: number;
@@ -22,9 +21,6 @@ export class ViewBlogComponent implements OnInit {
 
   constructor(private blogService: BlogService) {
     this.page = 1;
-  }
-
-  ngOnInit(): void {
     this.fetchAllPosts();
   }
 
