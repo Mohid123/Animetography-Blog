@@ -95,6 +95,7 @@ export class AddBlogComponent implements OnInit, OnDestroy {
   })
   uploadedImage$ = this.uploadedImage.asObservable();
   destroy$ = new Subject();
+  creatingPost$ = new Subject<boolean>();
   readonly items = [
     {
       text: 'Create post',
@@ -143,16 +144,13 @@ export class AddBlogComponent implements OnInit, OnDestroy {
   initBlogPostForm() {
     this.blogPostForm = this.fb.group({
       blogTitle: [
-        '', Validators.compose([Validators.required])
+        null, Validators.compose([Validators.required])
       ],
       blogSubtitle: [
-        '', Validators.compose([Validators.required])
+        null, Validators.compose([Validators.required])
       ],
       blogContent: [
-        '', Validators.compose([Validators.required])
-      ],
-      postedDate: [
-        '', Validators.compose([Validators.required])
+        null, Validators.compose([Validators.required])
       ],
       coverImage: [
         null, Validators.compose([Validators.required])
@@ -213,17 +211,24 @@ export class AddBlogComponent implements OnInit, OnDestroy {
   }
 
   createPost() {
-    console.log(this.blogPostForm.value);
-    this.blogService.createNewPost(this.blogPostForm.value).pipe(takeUntil(this.destroy$))
-    .subscribe((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        this.notif.displayNotification('Successfully created new blog post', 'Post Creation', TuiNotification.Success);
-        setTimeout(() => this.router.navigate(['/view-posts']), 200);
-      }
-      else {
-        this.notif.displayNotification(res.errors[0].error?.message, 'Post Creation', TuiNotification.Error)
-      }
-    })
+    if(this.blogPostForm.valid) {
+      this.creatingPost$.next(true);
+      this.blogService.createNewPost(this.blogPostForm.value).pipe(takeUntil(this.destroy$))
+      .subscribe((res: ApiResponse<any>) => {
+        if(!res.hasErrors()) {
+          this.notif.displayNotification('Successfully created new blog post', 'Post Creation', TuiNotification.Success);
+          this.creatingPost$.next(false);
+          setTimeout(() => this.router.navigate(['/view-posts']), 200);
+        }
+        else {
+          this.creatingPost$.next(false);
+          this.notif.displayNotification(res.errors[0].error?.message, 'Post Creation', TuiNotification.Error);
+        }
+      })
+    }
+    else {
+      this.notif.displayNotification('All fields are required', 'Create post', TuiNotification.Warning);
+    }
   }
 
   ngOnDestroy(): void {

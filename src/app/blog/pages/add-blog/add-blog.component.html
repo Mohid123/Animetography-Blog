@@ -153,6 +153,7 @@
     appearance="accent"
     class="tui-space_right-3 tui-space_left-3"
     (click)="createPost()"
+    [showLoader]="(creatingPost$ | async)!"
     size="xl"
   >
     Submit Post
