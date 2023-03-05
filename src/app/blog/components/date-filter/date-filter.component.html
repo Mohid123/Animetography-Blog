@@ -18,10 +18,21 @@
   <tui-calendar
     [value]="value"
     [showAdjacent]="false"
-    [maxViewedMonth]="firstMonth"
     [month]="firstMonth"
     [(hoveredItem)]="hoveredItem"
     (monthChange)="onMonthChangeFirst($event)"
     (dayClick)="onDayClick($event)"
   ></tui-calendar>
+  <div class="pb-2 text-center">
+    <button
+      tuiButton
+      type="button"
+      appearance="secondary"
+      class="tui-space_right-3 tui-space_left-3"
+      size="m"
+      (click)="filterPostByDateRange()"
+    >
+      Filter by date range
+    </button>
+  </div>
 </ng-template>

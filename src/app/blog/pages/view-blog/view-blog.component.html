@@ -8,24 +8,15 @@
 <section class="search-section">
   <app-searchbar (postID)="fetchPostById($event)" class="col-span-12 lg:col-span-10 md:col-span-8"></app-searchbar>
   <div class="flex justify-end col-span-12 py-2 sm:py-0 sm:inline-block lg:col-span-2 md:col-span-4">
-    <app-date-filter></app-date-filter>
-    <app-sort class="mx-3"></app-sort>
+    <app-date-filter (filterByDate)="fetchPostsByDateRange($event)"></app-date-filter>
+    <app-sort (sortStr)="sortPostsInOrder($event)" class="mx-3"></app-sort>
   </div>
 </section>
 
 <section class="post-section">
-  <ng-container *ngFor="let post of (posts$ | async)?.data.slice(0, 1); let i = index; trackBy: trackByFn">
-    <ng-container *ngIf="!(showSpinner$ | async)">
-      <app-top-post
-        [postTitle]="post?.blogTitle"
-        [postSubtitle]="post?.blogSubtitle"
-        [author]="post?.author"
-        [createdAt]="post?.createdAt"
-        [coverImage]="post?.coverImage[0]?.captureFileURL ?? '../../../../assets/login_bg.webp'"
-        [blurhash]="post?.coverImage[0]?.blurHash"
-      >
-      </app-top-post>
-      <div *ngIf="isSearched$ | async" class="flex justify-end py-3">
+  <ng-container *ngFor="let post of (posts$ | async)?.data?.slice(0, 1); let i = index; trackBy: trackByFn">
+    <ng-container *ngIf="!(showSpinner$ | async) || (posts$ | async)?.data?.length > 0">
+      <div *ngIf="(isSearched$ | async) || (dateFilterApplied | async)" class="flex justify-end pb-3">
         <button
           tuiButton
           type="button"
@@ -34,12 +25,42 @@
           appearance="accent"
           size="s"
         >
-          Clear Search
+          Clear Filters
         </button>
       </div>
+      <app-top-post
+        [postTitle]="post?.blogTitle"
+        [postSubtitle]="post?.blogSubtitle"
+        [author]="post?.author"
+        [createdAt]="post?.createdAt"
+        [coverImage]="post?.coverImage[0]?.captureFileURL ?? '../../../../assets/login_bg.webp'"
+        [blurhash]="post?.coverImage[0]?.blurHash"
+        (click)="router.navigate(['/read-post', post?._id])"
+        class="cursor-pointer"
+      >
+      </app-top-post>
     </ng-container>
   </ng-container>
   <app-top-post-skeleton *ngIf="(showSpinner$ | async)"></app-top-post-skeleton>
+
+  <ng-container *ngIf="(posts$ | async)?.data?.length == 0">
+    <div class="flex justify-end pb-3">
+      <button
+        tuiButton
+        type="button"
+        class="text-xs"
+        (click)="clearSearch()"
+        appearance="accent"
+        size="s"
+      >
+        Clear Filters
+      </button>
+    </div>
+    <div class="flex flex-col items-center justify-center w-full pb-12 align-middle">
+      <img ngSrc="../../../../assets/No_data.svg" alt="not_found_icon" width="400" height="400">
+      <span class="font-semibold text-[#C077C8] text-lg">It seems we've come up empty!! Try looking for something else why don't you...</span>
+    </div>
+  </ng-container>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 1.5xl:grid-cols-3 gap-4 py-5">
     <ng-container *ngFor="let post of (posts$ | async)?.data; let i = index; trackBy: trackByFn;">
@@ -50,8 +71,10 @@
           [postSubtitle]="post?.blogSubtitle"
           [author]="post?.author"
           [createdAt]="post?.createdAt"
-          [coverImage]="post?.coverImage[0]?.captureFileURL ?? '../../../../assets/login_bg.webp'"
+          [coverImage]="post?.coverImage[0]?.captureFileURL ?? '../../../../assets/placeholder.webp'"
           [blurhash]="post?.coverImage[0]?.blurHash"
+          (click)="router.navigate(['/read-post', post?._id])"
+          class="cursor-pointer"
         >
         </app-blog-post>
       </ng-container>

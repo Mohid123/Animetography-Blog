@@ -61,4 +61,38 @@ export class BlogService extends ApiService<Blog> {
       }
     }))
   }
+
+  filterPostsByDates(dateFrom: any, dateTo: any, page: number, limit: any, offset: any): Observable<ApiResponse<Blog>> {
+    page--;
+    limit = limit,
+    offset = page ? limit * page : 0
+    return this.post(`/api/blog/filterPostByDates?dateFrom=${dateFrom}&dateTo=${dateTo}&limit=${limit}&offset=${offset}`)
+    .pipe(map((res: ApiResponse<Blog>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0].error?.message, 'Could not filter posts', TuiNotification.Error)
+      }
+    }))
+  }
+
+  sortPosts(sortStr: string, page: number, limit: any, offset: any): Observable<ApiResponse<Blog>> {
+    page--;
+    limit = limit,
+    offset = page ? limit * page: 0
+    return this.post(`/api/blog/sortPostsByOrder?sortStr=${sortStr}&limit=${limit}&offset=${offset}`)
+    .pipe(map((res: any) => {
+      if(!res.hasErrors()) {
+        return res
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0].error?.message, 'Failed to sort', TuiNotification.Error)
+      }
+    }))
+  }
+
+  createNewPost(payload: BlogPost): Observable<ApiResponse<BlogPost>> {
+    return this.post(`/api/blog/addBlogPost`, payload)
+  }
 }

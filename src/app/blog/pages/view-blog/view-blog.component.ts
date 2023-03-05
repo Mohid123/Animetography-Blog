@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, map, BehaviorSubject } from 'rxjs';
 import { BlogPost, PostData } from '../../models/blog.interface';
 import { BlogService } from '../../services/blog.service';
@@ -18,8 +19,10 @@ export class ViewBlogComponent {
   Arr = Array;
   isSearched = new BehaviorSubject(false);
   isSearched$ = this.isSearched.asObservable();
+  dateFilterApplied = new BehaviorSubject(false);
+  sortVal = '';
 
-  constructor(private blogService: BlogService) {
+  constructor(private blogService: BlogService, public router: Router) {
     this.page = 1;
     this.fetchAllPosts();
   }
@@ -40,9 +43,25 @@ export class ViewBlogComponent {
     this.isSearched.next(true);
   }
 
+  fetchPostsByDateRange(value: any) {
+    this.posts$ = this.blogService.filterPostsByDates(value.dateFrom, value.dateTo, this.page, this.limit, this.offset);
+    this.dateFilterApplied.next(true);
+  }
+
+  sortPostsInOrder(value: any) {
+    if(this.sortVal == '' || this.sortVal == 'Ascending') {
+      this.sortVal = 'Descending'
+    }
+    else {
+      this.sortVal = value
+    }
+    this.posts$ = this.blogService.sortPosts(this.sortVal, this.page, this.limit, this.offset)
+  }
+
   clearSearch() {
     this.fetchAllPosts();
     this.isSearched.next(false);
+    this.dateFilterApplied.next(false);
     this.blogService.clearInput.emit('');
   }
 

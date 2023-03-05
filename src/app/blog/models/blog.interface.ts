@@ -13,5 +13,6 @@ export interface BlogPost {
 
 export interface PostData {
   data: BlogPost[],
-  totalCount: number
+  totalCount: number,
+  filteredCount?: number
 }

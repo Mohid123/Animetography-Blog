@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, Injector, OnDestroy, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   TUI_EDITOR_EXTENSIONS,
@@ -9,8 +9,17 @@ import {
   defaultEditorExtensions}
   from '@taiga-ui/addon-editor';
 import { TuiFileLike } from '@taiga-ui/kit';
-import { finalize, map, Observable, of, Subject, switchMap, timer } from 'rxjs';
+import { BehaviorSubject, finalize, map, Observable, of, Subject, switchMap, takeUntil, timer } from 'rxjs';
 import { tuiTypedFromEvent } from '@taiga-ui/cdk';
+import { MediaUploadService } from 'src/@core/common-services/media-upload.service';
+import { AuthService } from 'src/app/auth/auth.service';
+import { ApiResponse } from 'src/@core/models/api-response.model';
+import { ResponseAddMedia } from 'src/@core/models/media-upload.model';
+import { TuiNotification } from '@taiga-ui/core';
+import { profileImage } from 'src/app/auth/components/register/register.component';
+import { NotificationsService } from 'src/@core/common-services/notifications.service';
+import { BlogService } from '../../services/blog.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-blog',
@@ -71,17 +80,21 @@ import { tuiTypedFromEvent } from '@taiga-ui/cdk';
   ]
 })
 
-export class AddBlogComponent implements OnInit {
+export class AddBlogComponent implements OnInit, OnDestroy {
   @ViewChild(TuiEditorComponent)
   private readonly wysiwyg?: TuiEditorComponent;
 
   blogPostForm!: FormGroup;
-  readonly rejectedFiles$ = new Subject<TuiFileLike | null>();
-  readonly loadingFiles$ = new Subject<TuiFileLike | null>();
-  readonly loadedFiles$: Observable<TuiFileLike | null>;
+  readonly rejectedFiles$ = new Subject<boolean>();
+  readonly loadingFiles$ = new Subject<boolean>();
   activeIndex: number = 0;
   today = new Date();
-
+  uploadedImage: BehaviorSubject<profileImage> = new BehaviorSubject({
+    captureFileURL: '',
+    blurHash: ''
+  })
+  uploadedImage$ = this.uploadedImage.asObservable();
+  destroy$ = new Subject();
   readonly items = [
     {
       text: 'Create post',
@@ -115,12 +128,14 @@ export class AddBlogComponent implements OnInit {
   ];
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private media: MediaUploadService,
+    private auth: AuthService,
+    private notif: NotificationsService,
+    private blogService: BlogService,
+    private router: Router
     ) {
     this.initBlogPostForm();
-    this.loadedFiles$ = this.f['coverImage'].valueChanges.pipe(
-      switchMap(file => (file ? this.makeRequest(file) : of(null))),
-    );
   }
 
   ngOnInit(): void { }
@@ -136,14 +151,14 @@ export class AddBlogComponent implements OnInit {
       blogContent: [
         '', Validators.compose([Validators.required])
       ],
-      isFavorite: false,
       postedDate: [
         '', Validators.compose([Validators.required])
       ],
       coverImage: [
-        '', Validators.compose([Validators.required])
+        null, Validators.compose([Validators.required])
       ],
-      deletedCheck: false
+      deletedCheck: false,
+      author: this.auth.currentUserValue?.username || `${this.auth.currentUserValue?.firstName} ${this.auth.currentUserValue?.lastName }`
     })
   }
 
@@ -151,34 +166,39 @@ export class AddBlogComponent implements OnInit {
     return this.blogPostForm.controls;
   }
 
-  onReject(file: TuiFileLike | readonly TuiFileLike[]): void {
-    this.rejectedFiles$.next(file as TuiFileLike);
-  }
-
   removeFile(): void {
-    this.f['coverImage']?.setValue(null)
+    this.f['coverImage']?.setValue(null);
+    this.uploadedImage.next({
+      captureFileURL: '',
+      blurHash: ''
+    })
   }
 
-  clearRejected(): void {
-    this.removeFile();
-    this.rejectedFiles$.next(null);
-  }
-
-  makeRequest(file: TuiFileLike): Observable<TuiFileLike | null> {
-    this.loadingFiles$.next(file);
-
-    return timer(1000).pipe(
-      map(() => {
-        if (Math.random() > 0.5) {
-          return file;
+  makeRequestForFileUpload(event: any) {
+    let file = event.target.files[0];
+    if(file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg') {
+      this.loadingFiles$.next(true);
+      this.media.uploadMedia('images', file).pipe(takeUntil(this.destroy$), map((response: ApiResponse<ResponseAddMedia>) => {
+        if(!response.hasErrors()) {
+          this.uploadedImage.next({
+            captureFileURL: response.data?.url,
+            blurHash: ''
+          })
+          return this.uploadedImage
         }
-
-        this.rejectedFiles$.next(file);
-
-        return null;
-      }),
-      finalize(() => this.loadingFiles$.next(null)),
-    );
+        else {
+          this.loadingFiles$.next(false);
+          return this.notif.displayNotification(response.errors[0]?.error?.message, 'An error has occured', TuiNotification.Error);
+        }
+      })).subscribe((response: any) => {
+        this.f['coverImage']?.setValue([response.value]);
+        this.loadingFiles$.next(false);
+        this.notif.displayNotification('Image uploaded successfully', 'Success!', TuiNotification.Success)
+      })
+    }
+    else {
+      this.notif.displayNotification('Only JPEG/JPG and PNG files are allowed', 'File selection', TuiNotification.Warning);
+    }
   }
 
   // add the file to the editor view
@@ -190,6 +210,25 @@ export class AddBlogComponent implements OnInit {
     .commands.insertContent(
       `<${tag} controls width="100%"><source src="${file.link}" type="${file.attrs?.type}"></${tag}><p><a href="${file.link}" download="${file.name}">Download ${file.name}</a></p>`,
     );
+  }
+
+  createPost() {
+    console.log(this.blogPostForm.value);
+    this.blogService.createNewPost(this.blogPostForm.value).pipe(takeUntil(this.destroy$))
+    .subscribe((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Successfully created new blog post', 'Post Creation', TuiNotification.Success);
+        setTimeout(() => this.router.navigate(['/view-posts']), 200);
+      }
+      else {
+        this.notif.displayNotification(res.errors[0].error?.message, 'Post Creation', TuiNotification.Error)
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 
 }

@@ -9,7 +9,7 @@ import { AuthService } from '../../auth.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { Router } from '@angular/router';
 
-interface profileImage {
+export interface profileImage {
   captureFileURL: string,
   blurHash: string
 }
