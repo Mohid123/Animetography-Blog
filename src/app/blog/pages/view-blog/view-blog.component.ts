@@ -22,7 +22,7 @@ export class ViewBlogComponent {
   dateFilterApplied = new BehaviorSubject(false);
   sortVal = '';
 
-  constructor(private blogService: BlogService, public router: Router) {
+  constructor(private blogService: BlogService) {
     this.page = 1;
     this.fetchAllPosts();
   }

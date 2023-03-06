@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { getItem, setItem, StorageItem } from '../../@core/utils/local-storage.utils';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, shareReplay } from 'rxjs';
 import { catchError, exhaustMap, finalize, map, tap } from 'rxjs/operators';
 import { RegisterModel } from '../auth/models/register.model';
 import { AuthCredentials } from '../../@core/models/auth-credentials.model';
@@ -54,7 +54,7 @@ export class AuthService extends ApiService<AuthApiData> {
   // public methods
   login(params: AuthCredentials) {
     this.isLoadingSubject.next(true);
-    return this.post('/api/auth/login', params).pipe(
+    return this.post('/api/auth/login', params).pipe(shareReplay(),
       map((result: ApiResponse<any>) => {
         console.log('result',result);
         if (!result.hasErrors()) {
@@ -99,7 +99,7 @@ export class AuthService extends ApiService<AuthApiData> {
 
   registration(user: RegisterModel) {
     this.isLoadingSubject.next(true);
-    return this.post('/api/auth/signup', user).pipe(
+    return this.post('/api/auth/signup', user).pipe(shareReplay(),
       map((user:ApiResponse<SignInResponse>) => {
         this.isLoadingSubject.next(false);
         return user;
@@ -109,7 +109,7 @@ export class AuthService extends ApiService<AuthApiData> {
   }
 
   resetPassword(email: string, resetPassValue: {password: string, deletedCheck: boolean}): Observable<ApiResponse<any>> {
-    return this.post(`/api/user/resetPassword/${email}`, resetPassValue);
+    return this.post(`/api/user/resetPassword/${email}`, resetPassValue).pipe(shareReplay());
   }
 
   updateUser(user:User) {
@@ -120,11 +120,11 @@ export class AuthService extends ApiService<AuthApiData> {
   }
 
   getUserById(userID: string): Observable<ApiResponse<User>> {
-    return this.get(`/api/user/getUserByID/${userID}`);
+    return this.get(`/api/user/getUserByID/${userID}`).pipe(shareReplay());
   }
 
   sendConfirmationRequest(id: string, payload: User): Observable<ApiResponse<any>> {
-    return this.post(`/api/auth/confirmEmail/${id}`, payload);
+    return this.post(`/api/auth/confirmEmail/${id}`, payload).pipe(shareReplay());
   }
 
 }

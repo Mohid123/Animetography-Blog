@@ -52,7 +52,7 @@ export class BlogService extends ApiService<Blog> {
 
   getPostById(postID: string): Observable<ApiResponse<Blog>> {
     this.showSpinner.next(true);
-    return this.get(`/api/blog/getBlogByID/${postID}`).pipe(map((res: ApiResponse<Blog>) => {
+    return this.get(`/api/blog/getBlogByID/${postID}`).pipe(shareReplay(), map((res: ApiResponse<Blog>) => {
       if(!res.hasErrors()) {
         this.showSpinner.next(false);
         return res.data;
@@ -101,11 +101,11 @@ export class BlogService extends ApiService<Blog> {
   }
 
   createNewPost(payload: BlogPost): Observable<ApiResponse<BlogPost>> {
-    return this.post(`/api/blog/addBlogPost`, payload)
+    return this.post(`/api/blog/addBlogPost`, payload).pipe(shareReplay());
   }
 
   addPostToFavorites(payload: any): Observable<ApiResponse<any>> {
-    return this.post(`/api/favorites/addToFavorites`, payload);
+    return this.post(`/api/favorites/addToFavorites`, payload).pipe(shareReplay());
   }
 
   getUserFavorites(page: number, limit: any, offset: any): Observable<ApiResponse<any>> {

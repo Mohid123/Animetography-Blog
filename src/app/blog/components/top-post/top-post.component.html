@@ -10,9 +10,9 @@
     </app-blurhash>
   </div>
   <article class="w-full px-4 lg:w-1/2">
-    <h2 class="py-3 text-3xl font-semibold">{{postTitle}}</h2>
+    <h2 class="py-3 text-3xl font-semibold hover:text-[#C077C8]" [routerLink]="['/read-post', postID]">{{postTitle}}</h2>
     <p class="my-5 text-base font-medium text-gray-600">
-      {{postSubtitle}}
+      {{(postSubtitle.length > 300) ? ((postSubtitle) | slice:0:300)+'...':(postSubtitle)}}
     </p>
     <div class="flex justify-start mb-3">
       <tui-avatar

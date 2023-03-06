@@ -12,5 +12,6 @@ export class TopPostComponent {
   @Input() createdAt!: string;
   @Input() coverImage!: string;
   @Input() blurhash!: string;
+  @Input() postID!: string;
 
 }

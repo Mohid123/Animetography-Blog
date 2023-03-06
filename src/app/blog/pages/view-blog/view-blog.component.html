@@ -35,7 +35,7 @@
         [createdAt]="post?.postedDate"
         [coverImage]="post?.coverImage[0]?.captureFileURL ?? '../../../../assets/login_bg.webp'"
         [blurhash]="post?.coverImage[0]?.blurHash"
-        (click)="router.navigate(['/read-post', post?._id])"
+        [postID]="post?._id || post?.id"
         class="cursor-pointer"
       >
       </app-top-post>
@@ -73,7 +73,7 @@
           [createdAt]="post?.postedDate"
           [coverImage]="post?.coverImage[0]?.captureFileURL ?? '../../../../assets/placeholder.webp'"
           [blurhash]="post?.coverImage[0]?.blurHash"
-          (click)="router.navigate(['/read-post', post?._id])"
+          [postID]="post?._id || post?.id"
           class="cursor-pointer"
         >
         </app-blog-post>
