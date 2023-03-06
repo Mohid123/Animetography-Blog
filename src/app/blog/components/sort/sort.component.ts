@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { BlogService } from '../../services/blog.service';
 
 @Component({
   selector: 'app-sort',
@@ -8,7 +9,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 export class SortComponent {
   @Output() sortStr = new EventEmitter();
 
-  constructor() { }
+  constructor(public blogService: BlogService) { }
 
 
   sortFromAtoZ(sort: string) {

@@ -12,9 +12,9 @@ import { BlogService } from '../../services/blog.service';
 })
 export class ReadBlogComponent {
   post$!: Observable<BlogPost | any>;
+  showSpinner$ = this.blogService.showSpinner.asObservable();
 
   constructor(private blogService: BlogService, private activatedRoute: ActivatedRoute) {
-    console.log(this.activatedRoute)
     this.post$ = this.activatedRoute.params.pipe(
       pluck('id'),
       switchMap((val => this.blogService.getPostById(val)))

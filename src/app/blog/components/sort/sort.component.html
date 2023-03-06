@@ -6,5 +6,6 @@
   class="w-14 h-14"
   title="Sort from A-Z"
   (click)="sortFromAtoZ('Ascending')"
+  [showLoader]="(blogService.isSorting | async)!"
 ></button>
 

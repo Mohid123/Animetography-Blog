@@ -3,6 +3,7 @@ import { TuiDay, TuiDayRange, TuiMonth } from '@taiga-ui/cdk';
 import { TuiNotification } from '@taiga-ui/core';
 import {TuiMarkerHandler} from '@taiga-ui/core';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
+import { BlogService } from '../../services/blog.service';
 
 const TWO_DOTS: [string, string] = [`var(--tui-primary)`, `var(--tui-info-fill)`];
 const ONE_DOT: [string] = [`var(--tui-success-fill)`];
@@ -23,7 +24,7 @@ export class DateFilterComponent implements OnInit {
   readonly markerHandler: TuiMarkerHandler = (day: TuiDay) => day.day % 2 === 0 ? TWO_DOTS : ONE_DOT;
   @Output() filterByDate = new EventEmitter<void>();
 
-  constructor(private notif: NotificationsService) {}
+  constructor(private notif: NotificationsService, public blogService: BlogService) {}
 
   ngOnInit(): void {}
 
@@ -34,6 +35,7 @@ export class DateFilterComponent implements OnInit {
     }
     if(params.dateFrom && params.dateTo) {
       this.filterByDate.emit(params)
+      this.toggleDropdown()
     }
     else {
       this.notif.displayNotification('Please select a start and end date', 'Filter By Date', TuiNotification.Info);

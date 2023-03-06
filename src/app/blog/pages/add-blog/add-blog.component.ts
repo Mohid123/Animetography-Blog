@@ -156,6 +156,7 @@ export class AddBlogComponent implements OnInit, OnDestroy {
         null, Validators.compose([Validators.required])
       ],
       deletedCheck: false,
+      postedDate: this.today.getTime(),
       author: this.auth.currentUserValue?.username || `${this.auth.currentUserValue?.firstName} ${this.auth.currentUserValue?.lastName }`
     })
   }

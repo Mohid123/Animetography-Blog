@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, EventEmitter } from '@angular/core';
 import { TuiNotification } from '@taiga-ui/core';
-import { map, Observable, tap, BehaviorSubject } from 'rxjs';
+import { map, Observable, tap, BehaviorSubject, Subject } from 'rxjs';
 import { ApiService } from 'src/@core/common-services/api.service';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
 import { ApiResponse } from 'src/@core/models/api-response.model';
@@ -15,6 +15,8 @@ type Blog = PostData | BlogPost | any
 export class BlogService extends ApiService<Blog> {
   showSpinner: BehaviorSubject<boolean> = new BehaviorSubject(false);
   showPostSpinner: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  isSorting: Subject<boolean> = new Subject();
+  dateSorting: Subject<boolean> = new Subject();
   clearInput = new EventEmitter()
 
   constructor(protected override http: HttpClient, private notif: NotificationsService) {
@@ -63,30 +65,36 @@ export class BlogService extends ApiService<Blog> {
   }
 
   filterPostsByDates(dateFrom: any, dateTo: any, page: number, limit: any, offset: any): Observable<ApiResponse<Blog>> {
+    this.dateSorting.next(true);
     page--;
     limit = limit,
     offset = page ? limit * page : 0
     return this.post(`/api/blog/filterPostByDates?dateFrom=${dateFrom}&dateTo=${dateTo}&limit=${limit}&offset=${offset}`)
     .pipe(map((res: ApiResponse<Blog>) => {
       if(!res.hasErrors()) {
+        this.dateSorting.next(false);
         return res.data
       }
       else {
+        this.dateSorting.next(false);
         return this.notif.displayNotification(res.errors[0].error?.message, 'Could not filter posts', TuiNotification.Error)
       }
     }))
   }
 
   sortPosts(sortStr: string, page: number, limit: any, offset: any): Observable<ApiResponse<Blog>> {
+    this.isSorting.next(true)
     page--;
     limit = limit,
     offset = page ? limit * page: 0
     return this.post(`/api/blog/sortPostsByOrder?sortStr=${sortStr}&limit=${limit}&offset=${offset}`)
     .pipe(map((res: any) => {
       if(!res.hasErrors()) {
+        this.isSorting.next(false)
         return res
       }
       else {
+        this.isSorting.next(false)
         return this.notif.displayNotification(res.errors[0].error?.message, 'Failed to sort', TuiNotification.Error)
       }
     }))

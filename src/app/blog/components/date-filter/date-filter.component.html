@@ -10,6 +10,7 @@
     (click)="toggleDropdown()"
     title="Filter by date range"
     class="w-14 h-14"
+    [showLoader]="(blogService.dateSorting | async)!"
   ></button>
 
 </span>
