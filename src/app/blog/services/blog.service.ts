@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, EventEmitter } from '@angular/core';
 import { TuiNotification } from '@taiga-ui/core';
-import { map, Observable, tap, BehaviorSubject, Subject } from 'rxjs';
+import { map, Observable, tap, BehaviorSubject, Subject, shareReplay } from 'rxjs';
 import { ApiService } from 'src/@core/common-services/api.service';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
 import { ApiResponse } from 'src/@core/models/api-response.model';
@@ -30,7 +30,7 @@ export class BlogService extends ApiService<Blog> {
       limit: limit,
       offset: page ? limit * page : 0,
     }
-    return this.get(`/api/blog/getAllBlogs`, param).pipe(map((res: ApiResponse<Blog>) => {
+    return this.get(`/api/blog/getAllBlogs`, param).pipe(shareReplay(), map((res: ApiResponse<Blog>) => {
       if(!res.hasErrors()) {
         this.showPostSpinner.next(false);
         return res.data;
@@ -43,7 +43,7 @@ export class BlogService extends ApiService<Blog> {
   }
 
   searchPostsByTitle(blogTitle: string): Observable<ApiResponse<Blog>> {
-    return this.get(`/api/blog/searchPostByTitle/${blogTitle}`).pipe(tap((res: ApiResponse<Blog>) => {
+    return this.get(`/api/blog/searchPostByTitle/${blogTitle}`).pipe(shareReplay(), tap((res: ApiResponse<Blog>) => {
       if(res.hasErrors()) {
         this.notif.displayNotification(res.errors[0].error?.message, 'Search failed', TuiNotification.Error)
       }
@@ -70,7 +70,7 @@ export class BlogService extends ApiService<Blog> {
     limit = limit,
     offset = page ? limit * page : 0
     return this.post(`/api/blog/filterPostByDates?dateFrom=${dateFrom}&dateTo=${dateTo}&limit=${limit}&offset=${offset}`)
-    .pipe(map((res: ApiResponse<Blog>) => {
+    .pipe(shareReplay(), map((res: ApiResponse<Blog>) => {
       if(!res.hasErrors()) {
         this.dateSorting.next(false);
         return res.data
@@ -88,7 +88,7 @@ export class BlogService extends ApiService<Blog> {
     limit = limit,
     offset = page ? limit * page: 0
     return this.post(`/api/blog/sortPostsByOrder?sortStr=${sortStr}&limit=${limit}&offset=${offset}`)
-    .pipe(map((res: any) => {
+    .pipe(shareReplay(), map((res: any) => {
       if(!res.hasErrors()) {
         this.isSorting.next(false)
         return res
@@ -102,5 +102,25 @@ export class BlogService extends ApiService<Blog> {
 
   createNewPost(payload: BlogPost): Observable<ApiResponse<BlogPost>> {
     return this.post(`/api/blog/addBlogPost`, payload)
+  }
+
+  addPostToFavorites(payload: any): Observable<ApiResponse<any>> {
+    return this.post(`/api/favorites/addToFavorites`, payload);
+  }
+
+  getUserFavorites(page: number, limit: any, offset: any): Observable<ApiResponse<any>> {
+    page--;
+    const params: any = {
+      limit: limit,
+      offset: page ? limit * page : 0
+    }
+    return this.get(`/api/blog/getUserFavorites`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification('Failed to fetch your favorites', 'Something went wrong', TuiNotification.Error)
+      }
+    }))
   }
 }

@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, 
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { User } from 'src/@core/models/user.model';
 
 @Component({
   selector: 'app-header',
@@ -14,10 +15,14 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   @ViewChild('navbar') navbar?: ElementRef<any>;
 
   open = false;
+  openDropDown = false;
   loginState = false;
   writerAccess = false;
+  currentUser: User | any;
 
-  constructor(private auth: AuthService, @Inject(TuiDialogService) private readonly dialogService: TuiDialogService) { }
+  constructor(private auth: AuthService, @Inject(TuiDialogService) private readonly dialogService: TuiDialogService) {
+    this.currentUser = this.auth.currentUserValue;
+  }
 
   ngOnInit(): void {
     this.checkWriterStatus();
@@ -65,6 +70,10 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   logoutUser() {
     this.auth.logout()
+  }
+
+  toggleDropdown(): void {
+    this.openDropDown = !this.openDropDown;
   }
 
 }

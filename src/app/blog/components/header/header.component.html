@@ -1,12 +1,24 @@
 <ul #navbar class="md:px-28 font-[Mukta] py-8 bg-transparent text-white z-50 fixed w-screen 1.5sm:block hidden horizontal 1.5sm:px-24" (scroll)="onScroll()">
-  <li class="uppercase">Animetography</li>
+  <li class="uppercase pt-2">Animetography</li>
   <li class="float-right clear-both">
-    <div class="float-right">
+    <div class="float-right relative">
       <li routerLink="/view-posts" class="mx-5">Home</li>
       <li *ngIf="writerAccess === true" routerLink="/add-posts" class="mx-5">New Post</li>
       <li class="mx-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li>
       <li *ngIf="loginState === false" routerLink="/auth/login" class="ml-5 font-semibold text-purple-400">Login</li>
-      <li (click)="showDialog(template)" *ngIf="loginState === true" class="ml-5 font-semibold text-rose-600">Logout</li>
+      <ng-container *ngIf="loginState === true">
+        <li class="absolute left-full -top-3">
+          <tui-avatar
+            [text]="currentUser?.firstName + currentUser?.lastName"
+            [autoColor]="true"
+            [avatarUrl]="currentUser?.avatar[0]?.captureFileURL"
+            [tuiDropdown]="dropdownContent"
+            [tuiDropdownManual]="openDropDown"
+            [tuiDropdownDirection]="'bottom'"
+            (click)="toggleDropdown()"
+          ></tui-avatar>
+        </li>
+      </ng-container>
     </div>
   </li>
 </ul>
@@ -20,7 +32,6 @@
     class="z-50 cursor-pointer invert"
     alt="yummy_burger"
   >
-
     <div *tuiSidebar="open" class="h-screen bg-gradient-to-br from-zinc-900 to-slate-900">
       <ul class="px-10 font-[Mukta] py-8 text-white vertical">
         <li class="uppercase">Animetography</li>
@@ -28,8 +39,9 @@
           <li routerLink="/view-posts" class="my-5">Home</li>
           <li *ngIf="writerAccess === true" routerLink="/add-posts" class="my-5">New Post</li>
           <li class="my-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li>
+          <li *ngIf="loginState === true" routerLink="/profile" class="my-5">Profile</li>
           <li *ngIf="loginState === false" routerLink="/auth/login" class="my-10">Login</li>
-          <li (click)="showDialog(template)" *ngIf="loginState === true" class="my-10">Logout</li>
+          <li (click)="showDialog(template)" *ngIf="loginState === true" class="my-10 text-rose-500">Logout</li>
         </div>
       </ul>
     </div>
@@ -62,5 +74,12 @@
   >
     Do It!
   </button>
+  </div>
+</ng-template>
+
+<ng-template #dropdownContent>
+  <div class="mx-8 my-3 flex flex-col justify-center items-center">
+    <a *ngIf="loginState === true" routerLink="/profile" class="font-semibold text-purple-500 text-lg mb-3">Profile</a>
+    <a (click)="showDialog(template)" *ngIf="loginState === true" class="font-semibold text-rose-600 text-lg cursor-pointer">Logout</a>
   </div>
 </ng-template>
