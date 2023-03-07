@@ -56,7 +56,6 @@ export class AuthService extends ApiService<AuthApiData> {
     this.isLoadingSubject.next(true);
     return this.post('/api/auth/login', params).pipe(shareReplay(),
       map((result: ApiResponse<any>) => {
-        console.log('result',result);
         if (!result.hasErrors()) {
           setItem(StorageItem.User, result?.data?.user || null);
           setItem(StorageItem.JwtToken, result?.data?.token || null);
@@ -125,6 +124,18 @@ export class AuthService extends ApiService<AuthApiData> {
 
   sendConfirmationRequest(id: string, payload: User): Observable<ApiResponse<any>> {
     return this.post(`/api/auth/confirmEmail/${id}`, payload).pipe(shareReplay());
+  }
+
+  updateUserByID(userId: string, payload: any): Observable<ApiResponse<User>> {
+    return this.put(`/api/user/updateUser/${userId}`, payload).pipe(shareReplay(),
+      tap((result: ApiResponse<any>) => {
+        if (!result.hasErrors()) {
+          console.log(result.data)
+        }
+        else {
+          this.notif.displayNotification(result.errors[0]?.error?.message, 'Update Failed!', TuiNotification.Error);
+        }
+    }))
   }
 
 }

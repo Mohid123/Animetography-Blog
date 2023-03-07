@@ -94,12 +94,13 @@ export class RegisterComponent implements OnInit {
         return this.uploadedImage
        }
        else {
-        this.notif.displayNotification(response.errors[0]?.error?.message, 'An error has occured', TuiNotification.Error)
-        return
+        this.uploadingImage$.next(false)
+        return this.notif.displayNotification(response.errors[0]?.error?.message, 'An error has occured', TuiNotification.Error)
+        
        }
       })).subscribe((response) => {
         this.f['avatar']?.setValue([response])
-        this.uploadingImage$.next(false)
+        this.uploadingImage$.next(false);
         this.notif.displayNotification('Image uploaded successfully', 'Success!', TuiNotification.Success)
       })
     }

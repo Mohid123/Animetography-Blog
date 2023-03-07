@@ -8,7 +8,7 @@
 >
   <a routerLink="/view-posts" class="w-full px-5 py-5">Go Back</a>
 </button>
-<section class="profile-description px-8 py-10 rounded-md">
+<section *ngIf="!(isEditing$ | async)" class="profile-description px-8 py-10 rounded-md">
   <div class="flex md:flex-row flex-col justify-between items-center">
     <div class="py-3 lg:py-0">
       <tui-badged-content
@@ -45,6 +45,103 @@
   </div>
 </section>
 
+<!--Edit Profile-->
+<section *ngIf="(isEditing$ | async)" class="profile-description px-8 py-8 rounded-md">
+  <form [formGroup]="profileForm">
+    <div class="tui-form__row tui-form__row_multi-fields">
+      <div class="tui-form__multi-field">
+        <p class="text-sm font-semibold text-purple-400 mb-3">Click to change profile picture</p>
+        <div class="w-24">
+          <tui-loader [inheritColor]="true" [overlay]="true" [size]="'m'" [showLoader]="(uploadingImage$ | async)!">
+            <label>
+              <tui-avatar
+                class="cursor-pointer hover:opacity-70"
+                [text]="currentUser?.username"
+                size="xl"
+                [rounded]="true"
+                [avatarUrl]="uploadedImage.captureFileURL === '' ? currentUser?.avatar[0]?.captureFileURL: uploadedImage.captureFileURL"
+              >
+              </tui-avatar>
+              <input (change)="onSelectFile($event)" type='file' class="hidden" :accept=".png, .jpg, .jpeg" />
+            </label>
+          </tui-loader>
+        </div>
+      </div>
+      <div class="tui-form__multi-field">
+        <tui-input
+          formControlName="username"
+          [tuiTextfieldCleaner]="true"
+        >
+          Username&nbsp;
+          <span class="tui-required"></span>
+          <input
+            tuiTextfield
+            placeholder="Enter username"
+            type="text"
+          />
+          </tui-input>
+        </div>
+      <div class="tui-form__multi-field">
+        <tui-input
+          formControlName="firstName"
+          [tuiTextfieldCleaner]="true"
+        >
+          First name&nbsp;
+          <span class="tui-required"></span>
+          <input
+            tuiTextfield
+            placeholder="Enter firstname"
+            type="text"
+          />
+          </tui-input>
+      </div>
+      <div class="tui-form__multi-field">
+        <tui-input
+            formControlName="lastName"
+            [tuiTextfieldCleaner]="true"
+          >
+          Last name&nbsp;
+          <span class="tui-required"></span>
+          <input
+            tuiTextfield
+            placeholder="Enter lastname"
+            type="text"
+          />
+          </tui-input>
+      </div>
+    </div>
+    <div class="tui-form__row tui-form__row_multi-fields">
+      <div class="tui-form__multi-field">
+        <p class="text-sm text-[#C077C8]">Email:&nbsp;{{currentUser?.email}}</p>
+      </div>
+      <div class="tui-form__multi-field">
+        <button
+          tuiButton
+          type="submit"
+          class="tui-space_right-3 tui-space_left-3"
+          appearance="secondary-destructive"
+          size="m"
+          (click)="submitProfileChanges()"
+          [showLoader]="(profileUpdating$ | async)!"
+        >
+          Submit profile changes
+        </button>
+
+        <button
+          tuiButton
+          type="button"
+          class="tui-space_right-3 tui-space_left-3"
+          appearance="accent"
+          size="m"
+          (click)="cancelUpdate()"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </form>
+</section>
+
 <tui-tabs tuiMobileTabs class="mx-2 lg:mx-20 md:mx-10" [activeItemIndex]="activeIndex">
   <ng-container *ngFor="let item of items; let i = index">
     <button
@@ -68,7 +165,10 @@
         <app-favorite-post
           [author]="fav?.author"
           [createdAt]="fav?.postedDate"
-          [coverImage]="fav?.coverImage[0]?.captureFileURL"
+          [coverImage]="fav?.coverImage[0]?.captureFileURL ?? '../../../../assets/placeholder.webp'"
+          [postSubtitle]="fav?.blogSubtitle"
+          [postTitle]="fav?.blogTitle"
+          [blurhash]="fav?.coverImage[0]?.blurHash"
         ></app-favorite-post>
       </ng-container>
     </ng-container>
@@ -82,6 +182,16 @@
 
 <ng-template #dropdownContent>
   <div class="mx-8 my-3 flex flex-col justify-center items-center">
-    <span class="text-sm text-rose-600 font-semibold cursor-pointer">Edit profile</span>
+    <span class="text-sm text-rose-600 font-semibold cursor-pointer" (click)="isEditing$.next(true)">Edit profile</span>
   </div>
+</ng-template>
+
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="w-full mt-1 text-left fv-plugins-message-container text-xxs 2xl:text-xs">
+      <span class="font-semibold text-red-700 fv-help-block text-xxs 2xl:text-xs" role="alert">
+        {{ message }}
+      </span>
+    </div>
+  </ng-container>
 </ng-template>
