@@ -17,7 +17,9 @@ export class BlogService extends ApiService<Blog> {
   showPostSpinner: BehaviorSubject<boolean> = new BehaviorSubject(false);
   isSorting: Subject<boolean> = new Subject();
   dateSorting: Subject<boolean> = new Subject();
-  clearInput = new EventEmitter()
+  clearInput = new EventEmitter();
+
+  editPost = new BehaviorSubject<any>({})
 
   constructor(protected override http: HttpClient, private notif: NotificationsService) {
     super(http)
@@ -104,6 +106,10 @@ export class BlogService extends ApiService<Blog> {
     return this.post(`/api/blog/addBlogPost`, payload).pipe(shareReplay());
   }
 
+  updatePost(payload: BlogPost, postID: string): Observable<ApiResponse<any>> {
+    return this.put(`/api/blog/updateBlogPost/${postID}`, payload).pipe(shareReplay());
+  }
+
   addPostToFavorites(payload: any): Observable<ApiResponse<any>> {
     return this.post(`/api/favorites/addToFavorites`, payload).pipe(shareReplay());
   }
@@ -122,5 +128,25 @@ export class BlogService extends ApiService<Blog> {
         return this.notif.displayNotification('Failed to fetch your favorites', 'Something went wrong', TuiNotification.Error)
       }
     }))
+  }
+
+  deletePost(postID: string): Observable<ApiResponse<any>> {
+    return this.post(`/api/blog/deleteBlogPost/${postID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Post deleted successfully', 'Delete post', TuiNotification.Success)
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification('Something went wrong', 'Delete post', TuiNotification.Error)
+      }
+    }))
+  }
+
+  set sendBlogPostForEdit(post: BlogPost) {
+    this.editPost.next(post);
+  }
+
+  get sendBlogPostForEdit() {
+    return this.editPost.value;
   }
 }

@@ -8,8 +8,7 @@ import {
   TuiEditorComponent,
   defaultEditorExtensions}
   from '@taiga-ui/addon-editor';
-import { TuiFileLike } from '@taiga-ui/kit';
-import { BehaviorSubject, finalize, map, Observable, of, Subject, switchMap, takeUntil, timer } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { tuiTypedFromEvent } from '@taiga-ui/cdk';
 import { MediaUploadService } from 'src/@core/common-services/media-upload.service';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -19,7 +18,10 @@ import { TuiNotification } from '@taiga-ui/core';
 import { profileImage } from 'src/app/auth/components/register/register.component';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
 import { BlogService } from '../../services/blog.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BlogPost } from '../../models/blog.interface';
+import { pluck } from 'rxjs/internal/operators/pluck';
+import { switchMap } from 'rxjs/internal/operators/switchMap';
 
 @Component({
   selector: 'app-add-blog',
@@ -83,13 +85,14 @@ import { Router } from '@angular/router';
 export class AddBlogComponent implements OnInit, OnDestroy {
   @ViewChild(TuiEditorComponent)
   private readonly wysiwyg?: TuiEditorComponent;
-
+  editMode$ = new BehaviorSubject<boolean>(false);
+  post$: any;
   blogPostForm!: FormGroup;
   readonly rejectedFiles$ = new Subject<boolean>();
   readonly loadingFiles$ = new Subject<boolean>();
   activeIndex: number = 0;
   today = new Date();
-  uploadedImage: BehaviorSubject<profileImage> = new BehaviorSubject({
+  uploadedImage: BehaviorSubject<profileImage | any> = new BehaviorSubject({
     captureFileURL: '',
     blurHash: ''
   })
@@ -134,30 +137,52 @@ export class AddBlogComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private notif: NotificationsService,
     private blogService: BlogService,
-    private router: Router
-    ) {
-    this.initBlogPostForm();
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+    )
+    {
+      this.activatedRoute.params.pipe(pluck('id'), switchMap(id => id ? this.blogService.getPostById(id) : ''))
+      .subscribe((val: any) => {
+        if(val !== '') {
+          this.post$ = val;
+          if(Object.keys(this.blogService.sendBlogPostForEdit).length == 0) {
+            this.initBlogPostForm(val);
+            this.uploadedImage.next(val?.coverImage[0]);
+            this.editMode$.next(true)
+          }
+        }
+      });
+    }
+
+  ngOnInit(): void {
+    if(Object.keys(this.blogService.sendBlogPostForEdit).length > 0) {
+      this.initBlogPostForm(this.blogService.sendBlogPostForEdit);
+      this.uploadedImage.next(this.blogService.sendBlogPostForEdit?.coverImage[0]);
+      this.editMode$.next(true)
+    }
+    else {
+      this.editMode$.next(false)
+      this.initBlogPostForm();
+    }
   }
 
-  ngOnInit(): void { }
-
-  initBlogPostForm() {
+  initBlogPostForm(post?: BlogPost | any) {
     this.blogPostForm = this.fb.group({
       blogTitle: [
-        null, Validators.compose([Validators.required])
+        post?.blogTitle || null, Validators.compose([Validators.required])
       ],
       blogSubtitle: [
-        null, Validators.compose([Validators.required])
+        post?.blogSubtitle || null, Validators.compose([Validators.required])
       ],
       blogContent: [
-        null, Validators.compose([Validators.required])
+        post?.blogContent ||null, Validators.compose([Validators.required])
       ],
       coverImage: [
-        null, Validators.compose([Validators.required])
+        post?.coverImage || null, Validators.compose([Validators.required])
       ],
       deletedCheck: false,
-      postedDate: this.today.getTime(),
-      author: this.auth.currentUserValue?.username || `${this.auth.currentUserValue?.firstName} ${this.auth.currentUserValue?.lastName }`
+      postedDate: post?.postedDate || this.today.getTime(),
+      author: post?.author || (this.auth.currentUserValue?.username || `${this.auth.currentUserValue?.firstName}`)
     })
   }
 
@@ -214,18 +239,34 @@ export class AddBlogComponent implements OnInit, OnDestroy {
   createPost() {
     if(this.blogPostForm.valid) {
       this.creatingPost$.next(true);
-      this.blogService.createNewPost(this.blogPostForm.value).pipe(takeUntil(this.destroy$))
-      .subscribe((res: ApiResponse<any>) => {
-        if(!res.hasErrors()) {
-          this.notif.displayNotification('Successfully created new blog post', 'Post Creation', TuiNotification.Success);
-          this.creatingPost$.next(false);
-          setTimeout(() => this.router.navigate(['/view-posts']), 200);
-        }
-        else {
-          this.creatingPost$.next(false);
-          this.notif.displayNotification(res.errors[0].error?.message, 'Post Creation', TuiNotification.Error);
-        }
-      })
+      if(this.editMode$.value == false) {
+        this.blogService.createNewPost(this.blogPostForm.value).pipe(takeUntil(this.destroy$))
+        .subscribe((res: ApiResponse<any>) => {
+          if(!res.hasErrors()) {
+            this.notif.displayNotification('Successfully created new blog post', 'Post Creation', TuiNotification.Success);
+            this.creatingPost$.next(false);
+            setTimeout(() => this.router.navigate(['/view-posts']), 200);
+          }
+          else {
+            this.creatingPost$.next(false);
+            this.notif.displayNotification(res.errors[0].error?.message, 'Post Creation', TuiNotification.Error);
+          }
+        })
+      }
+      else {
+        this.blogService.updatePost(this.blogPostForm.value, this.post$.id).pipe(takeUntil(this.destroy$))
+        .subscribe((res: ApiResponse<any>) => {
+          if(!res.hasErrors()) {
+            this.notif.displayNotification('Post updated successfully', 'Update Post', TuiNotification.Success);
+            this.creatingPost$.next(false);
+            setTimeout(() => this.router.navigate(['/view-posts']), 200);
+          }
+          else {
+            this.creatingPost$.next(false);
+            this.notif.displayNotification(res.errors[0].error?.message, 'Update Post', TuiNotification.Error);
+          }
+        })
+      }
     }
     else {
       this.notif.displayNotification('All fields are required', 'Create post', TuiNotification.Warning);

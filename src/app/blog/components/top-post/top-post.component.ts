@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { BlogPost } from '../../models/blog.interface';
 
 @Component({
   selector: 'app-top-post',
@@ -6,12 +7,16 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./top-post.component.scss']
 })
 export class TopPostComponent {
-  @Input() postTitle!: string;
-  @Input() postSubtitle!: string;
-  @Input() author!: string;
-  @Input() createdAt!: string;
-  @Input() coverImage!: string;
-  @Input() blurhash!: string;
-  @Input() postID!: string;
+  @Input() post!: BlogPost | any;
+  @Input() showOptions!: boolean;
+  @Output() editPost = new EventEmitter();
+  @Output() deletePost = new EventEmitter();
 
+  editPostRequest() {
+    this.editPost.emit(this.post)
+  }
+
+  deletePostRequest() {
+    this.deletePost.emit(this.post)
+  }
 }

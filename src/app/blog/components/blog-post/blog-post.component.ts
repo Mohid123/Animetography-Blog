@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
+import { BlogPost } from '../../models/blog.interface';
 
 @Component({
   selector: 'app-blog-post',
@@ -7,11 +8,16 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlogPostComponent {
-  @Input() postTitle!: string;
-  @Input() postSubtitle!: string;
-  @Input() author!: string;
-  @Input() createdAt!: string;
-  @Input() coverImage!: string;
-  @Input() blurhash!: string;
-  @Input() postID!: string;
+  @Input() post!: BlogPost | any;
+  @Input() showOptions!: boolean;
+  @Output() editPost = new EventEmitter();
+  @Output() deletePost = new EventEmitter();
+
+  editPostRequest() {
+    this.editPost.emit(this.post)
+  }
+
+  deletePostRequest() {
+    this.deletePost.emit(this.post)
+  }
 }

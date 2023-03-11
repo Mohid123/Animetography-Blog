@@ -1,16 +1,22 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, map, BehaviorSubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Inject, ViewChild, OnDestroy } from '@angular/core';
+import { Observable, map, BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { BlogPost, PostData } from '../../models/blog.interface';
 import { BlogService } from '../../services/blog.service';
-
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/auth/auth.service';
+import { User } from 'src/@core/models/user.model';
+import { TuiDialogContext } from '@taiga-ui/core';
+import { TuiDialogService } from '@taiga-ui/core';
+import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { ApiResponse } from 'src/@core/models/api-response.model';
 @Component({
   selector: 'app-view-blog',
   templateUrl: './view-blog.component.html',
   styleUrls: ['./view-blog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ViewBlogComponent {
+export class ViewBlogComponent implements OnDestroy {
+  deletePostID!: string
   offset: number = 0;
   limit: number = 7;
   page: number;
@@ -21,10 +27,19 @@ export class ViewBlogComponent {
   isSearched$ = this.isSearched.asObservable();
   dateFilterApplied = new BehaviorSubject(false);
   sortVal = '';
+  user: User | null;
+  @ViewChild('template') template: any;
+  destroy$ = new Subject();
 
-  constructor(private blogService: BlogService) {
+  constructor(
+    private blogService: BlogService,
+    private router: Router,
+    private auth: AuthService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
+    ) {
     this.page = 1;
     this.fetchAllPosts();
+    this.user = this.auth.currentUserValue;
   }
 
   fetchAllPosts() {
@@ -67,5 +82,41 @@ export class ViewBlogComponent {
 
   trackByFn(index: number, item: BlogPost): string {
     return item._id;
+  }
+
+  editPost(post: BlogPost) {
+    if(post) {
+      this.blogService.sendBlogPostForEdit = post;
+      this.router.navigate(['/edit-post', post._id]);
+    }
+  }
+
+  deletePost() {
+    this.blogService.deletePost(this.deletePostID).pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      debugger
+      if(res) {
+        this.fetchAllPosts()
+      }
+    });
+  }
+
+  openDeleteDialog(post: BlogPost | any) {
+    if(post) {
+      this.deletePostID = post._id || post.id
+      this.showDialog(this.template)
+    }
+  }
+
+  showDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.dialogService.open(content, {
+      closeable: true,
+      dismissible: false
+    }).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

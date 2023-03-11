@@ -16,26 +16,25 @@
 <section class="post-section">
   <ng-container *ngFor="let post of (posts$ | async)?.data?.slice(0, 1); let i = index; trackBy: trackByFn">
     <ng-container *ngIf="!(showSpinner$ | async) || (posts$ | async)?.data?.length > 0">
-      <div *ngIf="(isSearched$ | async) || (dateFilterApplied | async)" class="flex justify-end pb-3">
-        <button
-          tuiButton
-          type="button"
-          class="text-xs"
-          (click)="clearSearch()"
-          appearance="accent"
-          size="s"
-        >
-          Clear Filters
-        </button>
-      </div>
+      <ng-container *ngIf="(isSearched$ | async) || (dateFilterApplied | async)">
+        <div class="flex justify-end pb-3">
+          <button
+            tuiButton
+            type="button"
+            class="text-xs"
+            (click)="clearSearch()"
+            appearance="accent"
+            size="s"
+          >
+            Clear Filters
+          </button>
+        </div>
+      </ng-container>
       <app-top-post
-        [postTitle]="post?.blogTitle"
-        [postSubtitle]="post?.blogSubtitle"
-        [author]="post?.author"
-        [createdAt]="post?.postedDate"
-        [coverImage]="post?.coverImage[0]?.captureFileURL ?? '../../../../assets/login_bg.webp'"
-        [blurhash]="post?.coverImage[0]?.blurHash"
-        [postID]="post?._id || post?.id"
+        [post]="post"
+        [showOptions]="(user && user.isWriter && (user.username == post.author || user.firstName == post.author)) ?? false"
+        (editPost)="editPost($event)"
+        (deletePost)="openDeleteDialog($event)"
         class="cursor-pointer"
       >
       </app-top-post>
@@ -58,7 +57,7 @@
     </div>
     <div class="flex flex-col items-center justify-center w-full pb-12 align-middle">
       <img ngSrc="../../../../assets/No_data.svg" alt="not_found_icon" width="400" height="400">
-      <span class="font-semibold text-[#C077C8] text-lg">It seems we've come up empty!! Try looking for something else why don't you...</span>
+      <span class="font-semibold text-[#C077C8] text-lg">It seems there's nothing to be found here!!</span>
     </div>
   </ng-container>
 
@@ -67,13 +66,10 @@
       <ng-container *ngIf="!(showSpinner$ | async)">
         <app-blog-post
           *ngIf="i > 0"
-          [postTitle]="post?.blogTitle"
-          [postSubtitle]="post?.blogSubtitle"
-          [author]="post?.author"
-          [createdAt]="post?.postedDate"
-          [coverImage]="post?.coverImage[0]?.captureFileURL ?? '../../../../assets/placeholder.webp'"
-          [blurhash]="post?.coverImage[0]?.blurHash"
-          [postID]="post?._id || post?.id"
+          [post]="post"
+          [showOptions]="(user && user.isWriter && (user.username == post.author || user.firstName == post.author)) ?? false"
+          (editPost)="editPost($event)"
+          (deletePost)="openDeleteDialog($event)"
           class="cursor-pointer"
         >
         </app-blog-post>
@@ -86,4 +82,34 @@
     </ng-container>
   </div>
 </section>
+
+<ng-template
+  #template
+  let-observer
+>
+  <div class="dialog-header">
+    <h3>Are you sure you want to delete this post?</h3>
+  </div>
+  <div class="dialog-content">
+    <button
+    tuiButton
+    type="button"
+    appearance="secondary-destructive"
+    size="m"
+    class="tui-space_right-3"
+    (click)="observer.complete()"
+  >
+    On second thought...
+  </button>
+  <button
+    tuiButton
+    type="button"
+    appearance="secondary"
+    size="m"
+    (click)="observer.complete(); deletePost()"
+  >
+    Do It!
+  </button>
+  </div>
+</ng-template>
 
