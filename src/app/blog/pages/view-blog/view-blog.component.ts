@@ -8,7 +8,7 @@ import { User } from 'src/@core/models/user.model';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
-import { ApiResponse } from 'src/@core/models/api-response.model';
+
 @Component({
   selector: 'app-view-blog',
   templateUrl: './view-blog.component.html',
