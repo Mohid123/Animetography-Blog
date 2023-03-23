@@ -18,7 +18,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { profileImage } from 'src/app/auth/components/register/register.component';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
 import { BlogService } from '../../services/blog.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { BlogPost } from '../../models/blog.interface';
 import { pluck } from 'rxjs/internal/operators/pluck';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
@@ -152,6 +152,12 @@ export class AddBlogComponent implements OnInit, OnDestroy {
           }
         }
       });
+
+      this.router.events.forEach((event: any) => {
+        if(event instanceof NavigationStart) {
+          this.blogService.sendBlogPostForEdit = {};
+        }
+      })
     }
 
   ngOnInit(): void {

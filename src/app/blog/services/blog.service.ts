@@ -142,7 +142,7 @@ export class BlogService extends ApiService<Blog> {
     }))
   }
 
-  set sendBlogPostForEdit(post: BlogPost) {
+  set sendBlogPostForEdit(post: BlogPost | any) {
     this.editPost.next(post);
   }
 
