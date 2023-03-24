@@ -4,7 +4,7 @@
     <div class="float-right relative">
       <li routerLink="/view-posts" class="mx-5">Home</li>
       <li *ngIf="writerAccess === true" routerLink="/add-posts" class="mx-5">New Post</li>
-      <li class="mx-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li>
+      <!-- <li class="mx-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li> -->
       <li *ngIf="loginState === false" routerLink="/auth/login" class="ml-5 font-semibold text-purple-400">Login</li>
       <ng-container *ngIf="loginState === true">
         <li class="absolute left-full -top-3">
@@ -38,7 +38,7 @@
         <div class="py-12">
           <li routerLink="/view-posts" class="my-5">Home</li>
           <li *ngIf="writerAccess === true" routerLink="/add-posts" class="my-5">New Post</li>
-          <li class="my-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li>
+          <!-- <li class="my-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li> -->
           <li *ngIf="loginState === true" routerLink="/profile" class="my-5">Profile</li>
           <li *ngIf="loginState === false" routerLink="/auth/login" class="my-10">Login</li>
           <li (click)="showDialog(template)" *ngIf="loginState === true" class="my-10 text-rose-500">Logout</li>

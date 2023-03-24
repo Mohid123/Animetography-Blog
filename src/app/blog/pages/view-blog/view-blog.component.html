@@ -43,7 +43,7 @@
   <app-top-post-skeleton *ngIf="(showSpinner$ | async)"></app-top-post-skeleton>
 
   <ng-container *ngIf="(posts$ | async)?.data?.length == 0">
-    <div class="flex justify-end pb-3">
+    <div *ngIf="(isSearched$ | async) || (dateFilterApplied | async)" class="flex justify-end pb-3">
       <button
         tuiButton
         type="button"
