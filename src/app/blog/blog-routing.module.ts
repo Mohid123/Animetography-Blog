@@ -28,6 +28,7 @@ const routes: Routes = [
       {
         path: 'edit-post/:id',
         component: AddBlogComponent,
+        canActivate: [AddPostGuard]
       },
       {
         path: 'read-post/:id',

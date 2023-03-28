@@ -251,7 +251,9 @@ export class AddBlogComponent implements OnInit, OnDestroy {
           if(!res.hasErrors()) {
             this.notif.displayNotification('Successfully created new blog post', 'Post Creation', TuiNotification.Success);
             this.creatingPost$.next(false);
-            setTimeout(() => this.router.navigate(['/view-posts']), 200);
+            let timeout: any;
+            clearTimeout(timeout)
+            timeout = setTimeout(() => this.router.navigate(['/view-posts']), 200);
           }
           else {
             this.creatingPost$.next(false);
@@ -265,7 +267,9 @@ export class AddBlogComponent implements OnInit, OnDestroy {
           if(!res.hasErrors()) {
             this.notif.displayNotification('Post updated successfully', 'Update Post', TuiNotification.Success);
             this.creatingPost$.next(false);
-            setTimeout(() => this.router.navigate(['/view-posts']), 200);
+            let timeout: any;
+            clearTimeout(timeout)
+            timeout = setTimeout(() => this.router.navigate(['/view-posts']), 200);
           }
           else {
             this.creatingPost$.next(false);

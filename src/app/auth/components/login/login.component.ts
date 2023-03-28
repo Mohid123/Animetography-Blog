@@ -55,7 +55,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     .subscribe((response: any) => {
       if(response) {
         this.notif.displayNotification('You have logged in successfully', 'Login Sucess!', TuiNotification.Success);
-        setTimeout(() => {
+        let timeOut: any;
+        clearTimeout(timeOut)
+        timeOut = setTimeout(() => {
           this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
             if(JSON.stringify(val) !== "{}") {
               this.router.navigate([val['returnUrl']])

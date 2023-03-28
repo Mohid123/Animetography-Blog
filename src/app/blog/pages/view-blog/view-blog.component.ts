@@ -94,7 +94,6 @@ export class ViewBlogComponent implements OnDestroy {
   deletePost() {
     this.blogService.deletePost(this.deletePostID).pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
-      debugger
       if(res) {
         this.fetchAllPosts()
       }
