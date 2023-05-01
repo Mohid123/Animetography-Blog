@@ -142,6 +142,22 @@ export class BlogService extends ApiService<Blog> {
     }))
   }
 
+  getUserDrafts(page: number, limit: any, offset: any): Observable<ApiResponse<Blog>> {
+    page--;
+    const params: any = {
+      limit: limit,
+      offset: page ? limit * page : 0
+    }
+    return this.get(`/api/blog/getUserDrafts`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification('Failed to fetch Drafts', 'Your Drafst', TuiNotification.Error)
+      }
+    }))
+  }
+
   set sendBlogPostForEdit(post: BlogPost | any) {
     this.editPost.next(post);
   }

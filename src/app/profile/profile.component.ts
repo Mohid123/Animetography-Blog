@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, ViewChild } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { BlogService } from '../blog/services/blog.service';
@@ -8,9 +8,12 @@ import { ApiResponse } from 'src/@core/models/api-response.model';
 import { MediaUploadService } from 'src/@core/common-services/media-upload.service';
 import { profileImage } from '../auth/components/register/register.component';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
-import { TuiNotification } from '@taiga-ui/core';
+import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { ResponseAddMedia } from 'src/@core/models/media-upload.model';
 import { User } from 'src/@core/models/user.model';
+import { TuiDialogService } from '@taiga-ui/core';
+import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -19,7 +22,9 @@ import { User } from 'src/@core/models/user.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileComponent implements OnDestroy {
+  deletePostID!: string;
   favorites$!: any;
+  drafts$!: any;
   page: number;
   limit: number = 7;
   offset: number = 0;
@@ -33,21 +38,32 @@ export class ProfileComponent implements OnDestroy {
   uploadedImage: profileImage = {
     captureFileURL: '',
     blurHash: ''
-  }
+  };
+
+  @ViewChild('template') template: any;
 
   constructor(
     private auth: AuthService,
     private blog: BlogService,
     private mediaService: MediaUploadService,
     private notif: NotificationsService,
-    private fb: FormBuilder
+    private router: Router,
+    private fb: FormBuilder,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
     ) {
     this.page = 1;
-    this.blog.getUserFavorites(this.page, this.limit, this.offset).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
+    this.blog.getUserFavorites(this.page, this.limit, this.offset)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: ApiResponse<any>) => {
       this.favorites$ = res;
       this.favoritePosts$.next(false);
     });
+    this.blog.getUserDrafts(this.page, this.limit, this.offset).pipe(takeUntil(this.destroy$))
+    .subscribe((res: ApiResponse<any>) => {
+      this.drafts$ = res;
+    });
     this.initProfileForm();
+    console.log(this.currentUser)
   }
 
   currentUser: any = this.auth.currentUserValue;
@@ -60,7 +76,7 @@ export class ProfileComponent implements OnDestroy {
       icon: 'tuiIconHeartLarge',
     },
     {
-      text: 'Your posts',
+      text: 'Your drafts',
       icon: 'tuiIconAlignJustifyLarge',
     }
   ];
@@ -82,7 +98,7 @@ export class ProfileComponent implements OnDestroy {
       firstName: [this.currentUser?.firstName || ''],
       lastName: [this.currentUser?.lastName || ''],
       username: [this.currentUser?.username || ''],
-      avatar: [this.currentUser?.avatar] || 
+      avatar: [this.currentUser?.avatar] ||
         [{
           captureFileURL: '',
           blurHash: ''
@@ -134,6 +150,32 @@ export class ProfileComponent implements OnDestroy {
         });
       }
     })
+  }
+
+  deletePost() {
+    this.blog.deletePost(this.deletePostID).pipe(takeUntil(this.destroy$))
+    .subscribe();
+  }
+
+  openDeleteDialog(post: BlogPost | any) {
+    if(post) {
+      this.deletePostID = post._id || post.id
+      this.showDialog(this.template)
+    }
+  }
+
+  showDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.dialogService.open(content, {
+      closeable: true,
+      dismissible: false
+    }).subscribe();
+  }
+
+  editPost(post: BlogPost) {
+    if(post) {
+      this.blog.sendBlogPostForEdit = post;
+      this.router.navigate(['/edit-post', post._id]);
+    }
   }
 
   ngOnDestroy(): void {

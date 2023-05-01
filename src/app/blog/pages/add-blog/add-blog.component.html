@@ -146,17 +146,29 @@
   </div>
 </section>
 <br>
-<div class="flex flex-col items-center justify-center pb-10">
+<div class="flex items-center justify-center pb-10">
   <button
     tuiButton
     type="button"
     appearance="accent"
     class="tui-space_right-3 tui-space_left-3"
-    (click)="createPost()"
+    (click)="publishPost()"
     [showLoader]="(creatingPost$ | async)!"
     size="xl"
   >
-    Submit Post
+    Publish Post
+  </button>
+
+  <button
+    tuiButton
+    type="button"
+    appearance="secondary"
+    class="tui-space_right-3 tui-space_left-3"
+    (click)="savePostAsDraft()"
+    [showLoader]="(creatingPost$ | async)!"
+    size="xl"
+  >
+    Save as Draft
   </button>
 </div>
 

@@ -188,7 +188,8 @@ export class AddBlogComponent implements OnInit, OnDestroy {
       ],
       deletedCheck: false,
       postedDate: post?.postedDate || this.today.getTime(),
-      author: post?.author || (this.auth.currentUserValue?.username || `${this.auth.currentUserValue?.firstName}`)
+      author: post?.author || (this.auth.currentUserValue?.username || `${this.auth.currentUserValue?.firstName}`),
+      status: 'Draft'
     })
   }
 
@@ -243,40 +244,55 @@ export class AddBlogComponent implements OnInit, OnDestroy {
   }
 
   createPost() {
+    this.creatingPost$.next(true);
+    if(this.editMode$.value == false) {
+      this.blogService.createNewPost(this.blogPostForm.value).pipe(takeUntil(this.destroy$))
+      .subscribe((res: ApiResponse<any>) => {
+        if(!res.hasErrors()) {
+          this.notif.displayNotification('Successfully created new blog post', 'Post Creation', TuiNotification.Success);
+          this.creatingPost$.next(false);
+          let timeout: any;
+          clearTimeout(timeout)
+          timeout = setTimeout(() => this.router.navigate(['/view-posts']), 200);
+        }
+        else {
+          this.creatingPost$.next(false);
+          this.notif.displayNotification(res.errors[0].error?.message, 'Post Creation', TuiNotification.Error);
+        }
+      })
+    }
+    else {
+      this.blogService.updatePost(this.blogPostForm.value, this.post$.id).pipe(takeUntil(this.destroy$))
+      .subscribe((res: ApiResponse<any>) => {
+        if(!res.hasErrors()) {
+          this.notif.displayNotification('Post updated successfully', 'Update Post', TuiNotification.Success);
+          this.creatingPost$.next(false);
+          let timeout: any;
+          clearTimeout(timeout)
+          timeout = setTimeout(() => this.router.navigate(['/view-posts']), 200);
+        }
+        else {
+          this.creatingPost$.next(false);
+          this.notif.displayNotification(res.errors[0].error?.message, 'Update Post', TuiNotification.Error);
+        }
+      })
+    }
+  }
+
+  publishPost() {
     if(this.blogPostForm.valid) {
-      this.creatingPost$.next(true);
-      if(this.editMode$.value == false) {
-        this.blogService.createNewPost(this.blogPostForm.value).pipe(takeUntil(this.destroy$))
-        .subscribe((res: ApiResponse<any>) => {
-          if(!res.hasErrors()) {
-            this.notif.displayNotification('Successfully created new blog post', 'Post Creation', TuiNotification.Success);
-            this.creatingPost$.next(false);
-            let timeout: any;
-            clearTimeout(timeout)
-            timeout = setTimeout(() => this.router.navigate(['/view-posts']), 200);
-          }
-          else {
-            this.creatingPost$.next(false);
-            this.notif.displayNotification(res.errors[0].error?.message, 'Post Creation', TuiNotification.Error);
-          }
-        })
-      }
-      else {
-        this.blogService.updatePost(this.blogPostForm.value, this.post$.id).pipe(takeUntil(this.destroy$))
-        .subscribe((res: ApiResponse<any>) => {
-          if(!res.hasErrors()) {
-            this.notif.displayNotification('Post updated successfully', 'Update Post', TuiNotification.Success);
-            this.creatingPost$.next(false);
-            let timeout: any;
-            clearTimeout(timeout)
-            timeout = setTimeout(() => this.router.navigate(['/view-posts']), 200);
-          }
-          else {
-            this.creatingPost$.next(false);
-            this.notif.displayNotification(res.errors[0].error?.message, 'Update Post', TuiNotification.Error);
-          }
-        })
-      }
+      this.f['status']?.setValue('Published');
+      this.createPost()
+    }
+    else {
+      this.notif.displayNotification('All fields are required', 'Create post', TuiNotification.Warning);
+    }
+  }
+
+  savePostAsDraft() {
+    if(this.blogPostForm.valid) {
+      this.f['status']?.setValue('Draft');
+      this.createPost();
     }
     else {
       this.notif.displayNotification('All fields are required', 'Create post', TuiNotification.Warning);

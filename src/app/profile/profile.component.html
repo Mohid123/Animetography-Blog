@@ -9,15 +9,15 @@
 >
   Go Back
 </button>
-<section *ngIf="!(isEditing$ | async)" class="profile-description px-8 py-10 rounded-md">
-  <div class="flex md:flex-row flex-col justify-between items-center">
+<section *ngIf="!(isEditing$ | async)" class="px-8 py-10 rounded-md profile-description">
+  <div class="flex flex-col items-center justify-between md:flex-row">
     <div class="py-3 lg:py-0">
       <tui-badged-content
         contentBottom="tuiIconSettings"
         colorTop="var(--tui-success-fill)"
         colorBottom="var(--tui-error-fill)"
         size="l"
-        class="tui-space_right-5 cursor-pointer"
+        class="cursor-pointer tui-space_right-5"
         [rounded]="true"
         [tuiDropdown]="dropdownContent"
         [tuiDropdownManual]="openDropDown"
@@ -47,11 +47,11 @@
 </section>
 
 <!--Edit Profile-->
-<section *ngIf="(isEditing$ | async)" class="profile-description px-8 py-8 rounded-md">
+<section *ngIf="(isEditing$ | async)" class="px-8 py-8 rounded-md profile-description">
   <form [formGroup]="profileForm">
     <div class="tui-form__row tui-form__row_multi-fields">
       <div class="tui-form__multi-field">
-        <p class="text-sm font-semibold text-purple-400 mb-3">Click to change profile picture</p>
+        <p class="mb-3 text-sm font-semibold text-purple-400">Click to change profile picture</p>
         <div class="w-24">
           <tui-loader [inheritColor]="true" [overlay]="true" [size]="'m'" [showLoader]="(uploadingImage$ | async)!">
             <label>
@@ -159,7 +159,7 @@
   </ng-container>
 </tui-tabs>
 
-<section *ngIf="activeIndex == 0" class="lg:mx-20 md:mx-10 mx-2 my-5">
+<section *ngIf="activeIndex == 0" class="mx-2 my-5 lg:mx-20 md:mx-10">
   <div class="grid grid-cols-1 lg:grid-cols-2 1.5xl:grid-cols-3 gap-4 py-5">
     <ng-container *ngFor="let fav of favorites$; let i = index; trackBy: trackByFn;">
       <ng-container *ngIf="(favoritePosts$ | async) == false">
@@ -181,9 +181,24 @@
   </div>
 </section>
 
+<section *ngIf="activeIndex == 1" class="mx-2 my-5 lg:mx-20 md:mx-10">
+  <div class="grid grid-cols-12 gap-4 py-5">
+    <ng-container *ngFor="let draft of drafts$; let i = index; trackBy: trackByFn;">
+      <app-draft-post
+        [post]="draft"
+        [showOptions]="(currentUser && currentUser.isWriter && (currentUser.username == draft.author || currentUser.firstName == draft.author)) ?? false"
+        (editPost)="editPost($event)"
+        (deletePost)="openDeleteDialog($event)"
+        class="col-span-12"
+      >
+      </app-draft-post>
+    </ng-container>
+  </div>
+</section>
+
 <ng-template #dropdownContent>
-  <div class="mx-8 my-3 flex flex-col justify-center items-center">
-    <span class="text-sm text-rose-600 font-semibold cursor-pointer" (click)="isEditing$.next(true); toggleDropdown()">Edit profile</span>
+  <div class="flex flex-col items-center justify-center mx-8 my-3">
+    <span class="text-sm font-semibold cursor-pointer text-rose-600" (click)="isEditing$.next(true); toggleDropdown()">Edit profile</span>
   </div>
 </ng-template>
 
@@ -195,4 +210,34 @@
       </span>
     </div>
   </ng-container>
+</ng-template>
+
+<ng-template
+  #template
+  let-observer
+>
+  <div class="dialog-header">
+    <h3>Are you sure you want to delete this post?</h3>
+  </div>
+  <div class="dialog-content">
+    <button
+    tuiButton
+    type="button"
+    appearance="secondary-destructive"
+    size="m"
+    class="tui-space_right-3"
+    (click)="observer.complete()"
+  >
+    On second thought...
+  </button>
+  <button
+    tuiButton
+    type="button"
+    appearance="secondary"
+    size="m"
+    (click)="observer.complete(); deletePost()"
+  >
+    Do It!
+  </button>
+  </div>
 </ng-template>

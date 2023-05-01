@@ -35,7 +35,6 @@
         [showOptions]="(user && user.isWriter && (user.username == post.author || user.firstName == post.author)) ?? false"
         (editPost)="editPost($event)"
         (deletePost)="openDeleteDialog($event)"
-        class="cursor-pointer"
       >
       </app-top-post>
     </ng-container>
@@ -70,7 +69,6 @@
           [showOptions]="(user && user.isWriter && (user.username == post.author || user.firstName == post.author)) ?? false"
           (editPost)="editPost($event)"
           (deletePost)="openDeleteDialog($event)"
-          class="cursor-pointer"
         >
         </app-blog-post>
       </ng-container>

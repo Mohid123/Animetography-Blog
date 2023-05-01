@@ -8,7 +8,8 @@ export interface BlogPost {
  postedDate: number,
  coverImage: Avatar[],
  deletedCheck: boolean,
- author: string
+ author: string,
+ status: string
 }
 
 export interface PostData {

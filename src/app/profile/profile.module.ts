@@ -11,11 +11,14 @@ import { TuiTabsModule } from '@taiga-ui/kit/components/tabs';
 import { BlogPostSkeletonComponent } from 'src/@core/standalones/blog-post-skeleton/blog-post-skeleton.component';
 import { FavoritePostComponent } from 'src/@core/standalones/favorite-post/favorite-post.component';
 import { TuiLoaderModule } from '@taiga-ui/core';
+import { DraftPostComponent } from './components/draft-post/draft-post.component';
+import { BlurhashComponent } from 'src/@core/standalones/blurhash/blurhash.component';
 
 
 @NgModule({
   declarations: [
-    ProfileComponent
+    ProfileComponent,
+    DraftPostComponent
   ],
   imports: [
     CommonModule,
@@ -32,7 +35,8 @@ import { TuiLoaderModule } from '@taiga-ui/core';
     TuiDropdownModule,
     TuiInputModule,
     TuiTextfieldControllerModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    BlurhashComponent
   ]
 })
 export class ProfileModule { }
