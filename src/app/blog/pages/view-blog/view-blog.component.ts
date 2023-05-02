@@ -30,6 +30,7 @@ export class ViewBlogComponent implements OnDestroy {
   user: User | null;
   @ViewChild('template') template: any;
   destroy$ = new Subject();
+  index: number;
 
   constructor(
     private blogService: BlogService,
@@ -38,6 +39,7 @@ export class ViewBlogComponent implements OnDestroy {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
     ) {
     this.page = 1;
+    this.index = 0
     this.fetchAllPosts();
     this.user = this.auth.currentUserValue;
   }
@@ -46,8 +48,9 @@ export class ViewBlogComponent implements OnDestroy {
     this.posts$ = this.blogService.getAllPosts(this.page, this.limit, this.offset);
   }
 
-  next(): void {
-    this.page++;
+  goToPage(index: number): void {
+    this.index = index;
+    this.page = index + 1;
     this.posts$ = this.blogService.getAllPosts(this.page, this.limit, this.offset);
   }
 
@@ -112,6 +115,10 @@ export class ViewBlogComponent implements OnDestroy {
       closeable: true,
       dismissible: false
     }).subscribe();
+  }
+
+  floorNumber(value: number) {
+    return Math.ceil(value)
   }
 
   ngOnDestroy(): void {

@@ -81,6 +81,15 @@
   </div>
 </section>
 
+<div *ngIf="(posts$ | async)?.totalCount > 0" class="flex justify-center pt-10 pb-6">
+  <tui-pagination
+    [length]="floorNumber((posts$ | async)?.totalCount/ limit)"
+    [index]="index"
+    (indexChange)="goToPage($event)"
+  >
+  </tui-pagination>
+</div>
+
 <ng-template
   #template
   let-observer
