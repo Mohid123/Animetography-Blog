@@ -5,6 +5,7 @@ export interface BlogPost {
  blogTitle: string,
  blogSubtitle: string,
  blogContent: string,
+ blogSlug: string,
  postedDate: number,
  coverImage: Avatar[],
  deletedCheck: boolean,

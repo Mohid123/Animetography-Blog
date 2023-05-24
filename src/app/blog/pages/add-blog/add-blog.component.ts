@@ -189,7 +189,8 @@ export class AddBlogComponent implements OnInit, OnDestroy {
       deletedCheck: false,
       postedDate: post?.postedDate || this.today.getTime(),
       author: post?.author || (this.auth.currentUserValue?.username || `${this.auth.currentUserValue?.firstName}`),
-      status: 'Draft'
+      status: 'Draft',
+      blogSlug: ''
     })
   }
 
@@ -245,6 +246,7 @@ export class AddBlogComponent implements OnInit, OnDestroy {
 
   createPost() {
     this.creatingPost$.next(true);
+    this.f['blogSlug']?.setValue(this.f['blogTitle']?.value?.replace(/\s/g, '-'))
     if(this.editMode$.value == false) {
       this.blogService.createNewPost(this.blogPostForm.value).pipe(takeUntil(this.destroy$))
       .subscribe((res: ApiResponse<any>) => {

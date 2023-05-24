@@ -31,7 +31,7 @@ const routes: Routes = [
         canActivate: [AddPostGuard]
       },
       {
-        path: 'read-post/:id',
+        path: 'read-post/:slugName',
         component: ReadBlogComponent
       }
     ]

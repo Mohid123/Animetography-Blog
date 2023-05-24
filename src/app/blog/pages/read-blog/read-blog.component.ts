@@ -9,6 +9,7 @@ import { BlogPost } from '../../models/blog.interface';
 import { BlogService } from '../../services/blog.service';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-read-blog',
@@ -26,16 +27,27 @@ export class ReadBlogComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute,
     private auth: AuthService,
     private notif: NotificationsService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private meta: Meta,
+    private title: Title
   ) {
+    this.meta.addTags([
+      {name: 'description', content: 'Storytelling in Animation'},
+      {name: 'author', content: 'Animetography-Blog'},
+      {name: 'keywords', content: 'Animation, Blog, Visual storytelling'}
+    ]);
+    this.setTitle('Read Blog Post');
+
     this.post$ = this.activatedRoute.params.pipe(
-      pluck('id'),
-      switchMap((val => this.blogService.getPostById(val)))
+      pluck('slugName'),
+      switchMap((val => this.blogService.getPostBySlugName(val)))
     );
 
     this.post$.pipe(map((val: any) => val.blogSubtitle)).subscribe(val => this.postSummary = val.slice(0, 100))
+  }
 
-    console.log(window.location.href)
+  public setTitle( newTitle: string) {
+    this.title.setTitle( newTitle );
   }
 
   addToFavorites() {

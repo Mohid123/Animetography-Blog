@@ -66,6 +66,20 @@ export class BlogService extends ApiService<Blog> {
     }))
   }
 
+  getPostBySlugName(slugName: string): Observable<ApiResponse<Blog>> {
+    this.showSpinner.next(true);
+    return this.get(`/api/blog/getBlogBySlugName/${slugName}`).pipe(shareReplay(), map((res: ApiResponse<Blog>) => {
+      if(!res.hasErrors()) {
+        this.showSpinner.next(false);
+        return res.data;
+      }
+      else {
+        this.showSpinner.next(false);
+        return this.notif.displayNotification(res.errors[0].error?.message, 'Failed to fetch post', TuiNotification.Error)
+      }
+    }))
+  }
+
   filterPostsByDates(dateFrom: any, dateTo: any, page: number, limit: any, offset: any): Observable<ApiResponse<Blog>> {
     this.dateSorting.next(true);
     page--;
