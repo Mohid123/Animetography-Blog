@@ -246,7 +246,7 @@ export class AddBlogComponent implements OnInit, OnDestroy {
 
   createPost() {
     this.creatingPost$.next(true);
-    this.f['blogSlug']?.setValue(this.f['blogTitle']?.value?.replace(/\s/g, '-'))
+    this.f['blogSlug']?.setValue(this.f['blogTitle']?.value?.replace(/\s/g, '-').toLowerCase().replace(/:+/g, ''))
     if(this.editMode$.value == false) {
       this.blogService.createNewPost(this.blogPostForm.value).pipe(takeUntil(this.destroy$))
       .subscribe((res: ApiResponse<any>) => {
