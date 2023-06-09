@@ -8,6 +8,7 @@ import { User } from 'src/@core/models/user.model';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-view-blog',
@@ -36,8 +37,10 @@ export class ViewBlogComponent implements OnDestroy {
     private blogService: BlogService,
     private router: Router,
     private auth: AuthService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private title: Title
     ) {
+    this.setTitle('Animetography Blog');
     this.page = 1;
     this.index = 0
     this.fetchAllPosts();
