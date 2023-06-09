@@ -47,6 +47,10 @@ export class ViewBlogComponent implements OnDestroy {
     this.user = this.auth.currentUserValue;
   }
 
+  public setTitle( newTitle: string) {
+    this.title.setTitle( newTitle );
+  }
+
   fetchAllPosts() {
     this.posts$ = this.blogService.getAllPosts(this.page, this.limit, this.offset);
   }
