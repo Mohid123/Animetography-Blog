@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://animetography-blog.com/sitemap.xml
