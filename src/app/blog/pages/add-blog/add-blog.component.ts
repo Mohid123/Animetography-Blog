@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild, Injector, OnDestroy, NgZone } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, Injector, OnDestroy, NgZone, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   TUI_EDITOR_EXTENSIONS,
@@ -14,7 +14,7 @@ import { MediaUploadService } from 'src/@core/common-services/media-upload.servi
 import { AuthService } from 'src/app/auth/auth.service';
 import { ApiResponse } from 'src/@core/models/api-response.model';
 import { ResponseAddMedia } from 'src/@core/models/media-upload.model';
-import { TuiNotification } from '@taiga-ui/core';
+import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { profileImage } from 'src/app/auth/components/register/register.component';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
 import { BlogService } from '../../services/blog.service';
@@ -22,6 +22,7 @@ import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { BlogPost } from '../../models/blog.interface';
 import { pluck } from 'rxjs/internal/operators/pluck';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
+import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 
 @Component({
   selector: 'app-add-blog',
@@ -138,7 +139,8 @@ export class AddBlogComponent implements OnInit, OnDestroy {
     private notif: NotificationsService,
     private blogService: BlogService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
     )
     {
       this.activatedRoute.params.pipe(pluck('id'), switchMap(id => id ? this.blogService.getPostById(id) : ''))
@@ -299,6 +301,17 @@ export class AddBlogComponent implements OnInit, OnDestroy {
     else {
       this.notif.displayNotification('All fields are required', 'Create post', TuiNotification.Warning);
     }
+  }
+
+  cancelPost(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.dialogService.open(content, {
+      closeable: false,
+      dismissible: false
+    }).subscribe();
+  }
+
+  navigateAway() {
+    this.router.navigate(['/view-posts'])
   }
 
   ngOnDestroy(): void {

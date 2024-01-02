@@ -108,7 +108,7 @@
   <div class="flex justify-end pb-8 mx-2">
     <p class="mx-5 text-sm text-white">
       Note:- If you have not selected a pen name or username, then your firstname will be used as your author name for this post.
-      <span>You can set your pen name on the profile page.</span>
+      <span>You can set your user name on the profile page.</span>
     </p>
   </div>
 </section>
@@ -150,11 +150,11 @@
   <button
     tuiButton
     type="button"
-    appearance="accent"
+    appearance="primary"
     class="tui-space_right-3 tui-space_left-3"
     (click)="publishPost()"
     [showLoader]="(creatingPost$ | async)!"
-    size="xl"
+    size="m"
   >
     Publish Post
   </button>
@@ -166,9 +166,19 @@
     class="tui-space_right-3 tui-space_left-3"
     (click)="savePostAsDraft()"
     [showLoader]="(creatingPost$ | async)!"
-    size="xl"
+    size="m"
   >
     Save as Draft
+  </button>
+  <button
+    tuiButton
+    type="button"
+    appearance="accent"
+    class="tui-space_right-3 tui-space_left-3"
+    (click)="(this.f['blogTitle'].value || this.f['blogSubtitle'].value || this.f['blogContent'].value || this.f['coverImage'].value) ? cancelPost(template): navigateAway()"
+    size="m"
+  >
+    Cancel
   </button>
 </div>
 
@@ -180,4 +190,45 @@
       </span>
     </div>
   </ng-container>
+</ng-template>
+
+<ng-template
+  #template
+  let-observer
+>
+  <div class="dialog-header">
+    <h3>All unsaved changes will be lost. Proceed?</h3>
+  </div>
+  <div class="flex justify-center py-5 gap-x-5">
+    <button
+      tuiButton
+      type="button"
+      appearance="primary"
+      size="s"
+      (click)="savePostAsDraft()"
+      [showLoader]="(creatingPost$ | async)!"
+    >
+      Save draft & proceed
+    </button>
+    <button
+      tuiButton
+      type="button"
+      appearance="custom"
+      size="s"
+      class="text-white bg-gray-600"
+      routerLink="/view-posts"
+      (click)="observer.complete();"
+    >
+     Proceed without saving
+    </button>
+    <button
+      tuiButton
+      type="button"
+      appearance="accent"
+      size="s"
+      (click)="observer.complete();"
+    >
+      Cancel
+    </button>
+  </div>
 </ng-template>

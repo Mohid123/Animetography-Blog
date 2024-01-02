@@ -13,7 +13,7 @@ import { ResponseAddMedia } from 'src/@core/models/media-upload.model';
 import { User } from 'src/@core/models/user.model';
 import { TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -26,7 +26,7 @@ export class ProfileComponent implements OnDestroy {
   favorites$!: any;
   drafts$!: any;
   page: number;
-  limit: number = 7;
+  limit: number = 12;
   offset: number = 0;
   favoritePosts$ = new BehaviorSubject(true);
   destroy$: Subject<boolean> = new Subject();
@@ -49,8 +49,19 @@ export class ProfileComponent implements OnDestroy {
     private notif: NotificationsService,
     private router: Router,
     private fb: FormBuilder,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private ac: ActivatedRoute
     ) {
+    this.ac.queryParams.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if(value) {
+        if(value?.drafts) {
+          this.activeIndex = 1;
+        }
+        else {
+          this.activeIndex = 0;
+        }
+      }
+    })
     this.page = 1;
     this.blog.getUserFavorites(this.page, this.limit, this.offset)
     .pipe(takeUntil(this.destroy$))
@@ -63,7 +74,6 @@ export class ProfileComponent implements OnDestroy {
       this.drafts$ = res;
     });
     this.initProfileForm();
-    console.log(this.currentUser)
   }
 
   currentUser: any = this.auth.currentUserValue;
@@ -91,6 +101,10 @@ export class ProfileComponent implements OnDestroy {
 
   toggleDropdown(): void {
     this.openDropDown = !this.openDropDown;
+  }
+
+  onActiveZone() {
+    this.openDropDown = false;
   }
 
   initProfileForm() {

@@ -76,4 +76,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.openDropDown = !this.openDropDown;
   }
 
+  onActiveZone() {
+    this.openDropDown = false;
+  }
+
 }

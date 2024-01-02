@@ -28,6 +28,7 @@
         [text]="currentUser?.username"
         size="l"
         [rounded]="true"
+        (tuiActiveZoneChange)="onActiveZone()"
         [avatarUrl]="currentUser?.avatar[0]?.captureFileURL"
       ></tui-avatar>
       </tui-badged-content>
@@ -237,7 +238,7 @@
     size="m"
     (click)="observer.complete(); deletePost()"
   >
-    Do It!
+    Delete!
   </button>
   </div>
 </ng-template>

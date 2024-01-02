@@ -1,7 +1,7 @@
 <ul #navbar class="md:px-28 font-[Mukta] py-8 bg-transparent text-white z-50 fixed w-screen 1.5sm:block hidden horizontal 1.5sm:px-24" (scroll)="onScroll()">
-  <li class="uppercase pt-2">Animetography</li>
+  <li class="pt-2 uppercase">Animetography</li>
   <li class="float-right clear-both">
-    <div class="float-right relative">
+    <div class="relative float-right">
       <li routerLink="/view-posts" class="mx-5">Home</li>
       <li *ngIf="writerAccess === true" routerLink="/add-posts" class="mx-5">New Post</li>
       <!-- <li class="mx-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li> -->
@@ -14,6 +14,7 @@
             [avatarUrl]="currentUser?.avatar[0]?.captureFileURL"
             [tuiDropdown]="dropdownContent"
             [tuiDropdownManual]="openDropDown"
+            (tuiActiveZoneChange)="onActiveZone()"
             [tuiDropdownDirection]="'bottom'"
             (click)="toggleDropdown()"
           ></tui-avatar>
@@ -41,7 +42,7 @@
           <!-- <li class="my-5"><a href="https://www.youtube.com/@animetographyblogarchive9852" target="_blank">YouTube</a></li> -->
           <li *ngIf="loginState === true" routerLink="/profile" class="my-5">Profile</li>
           <li *ngIf="loginState === false" routerLink="/auth/login" class="my-10">Login</li>
-          <li (click)="showDialog(template)" *ngIf="loginState === true" class="my-10 text-rose-500">Logout</li>
+          <li (click)="showDialog(template)" *ngIf="loginState === true" class="my-10 text-rose-700">Logout</li>
         </div>
       </ul>
     </div>
@@ -72,14 +73,16 @@
     size="m"
     (click)="observer.complete(); logoutUser();"
   >
-    Do It!
+    Logout
   </button>
   </div>
 </ng-template>
 
 <ng-template #dropdownContent>
-  <div class="mx-8 my-3 flex flex-col justify-center items-center">
-    <a *ngIf="loginState === true" routerLink="/profile" class="font-semibold text-white mb-3 bg-purple-400 rounded-md border border-white px-4 py-1">Profile</a>
-    <a (click)="showDialog(template)" *ngIf="loginState === true" class="font-semibold text-white cursor-pointer bg-rose-400 rounded-md border border-white px-4 py-1">Logout</a>
+  <div class="flex flex-col items-center justify-center mx-8 my-3">
+    <a *ngIf="loginState === true" routerLink="/profile" class="w-full px-4 py-1 mb-3 text-base font-semibold text-center rounded-md hover:bg-gray-100">Profile</a>
+    <a *ngIf="loginState === true" routerLink="/profile" [queryParams]="{drafts: 'true'}" class="w-full px-4 py-1 mb-3 text-base font-semibold text-center rounded-md hover:bg-gray-100">Your Drafts</a>
+    <a *ngIf="loginState === true" routerLink="/profile" [queryParams]="{favs: 'true'}" class="w-full px-4 py-1 mb-3 text-base font-semibold text-center rounded-md hover:bg-gray-100">Your Favorites</a>
+    <a (click)="showDialog(template)" *ngIf="loginState === true" class="w-full px-4 py-1 font-semibold text-center text-white border border-white rounded-md cursor-pointer bg-rose-700">Logout</a>
   </div>
 </ng-template>
