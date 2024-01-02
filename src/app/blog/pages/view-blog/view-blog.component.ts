@@ -19,7 +19,7 @@ import { Title } from '@angular/platform-browser';
 export class ViewBlogComponent implements OnDestroy {
   deletePostID!: string
   offset: number = 0;
-  limit: number = 7;
+  limit: number = 4;
   page: number;
   posts$!: Observable<PostData | any>;
   showSpinner$: Observable<boolean> = this.blogService.showPostSpinner.asObservable();

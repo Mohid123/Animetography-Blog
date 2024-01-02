@@ -80,7 +80,7 @@ export class ReadBlogComponent implements OnDestroy {
   showDialog(content: PolymorpheusContent<TuiDialogContext>): void {
     this.dialogService.open(content, {
       closeable: true,
-      dismissible: false
+      dismissible: true
     }).subscribe();
   }
 
