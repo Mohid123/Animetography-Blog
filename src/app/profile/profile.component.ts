@@ -72,6 +72,7 @@ export class ProfileComponent implements OnDestroy {
     this.blog.getUserDrafts(this.page, this.limit, this.offset).pipe(takeUntil(this.destroy$))
     .subscribe((res: ApiResponse<any>) => {
       this.drafts$ = res;
+      this.favoritePosts$.next(false);
     });
     this.initProfileForm();
   }

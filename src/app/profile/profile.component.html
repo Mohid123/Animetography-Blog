@@ -183,16 +183,23 @@
 </section>
 
 <section *ngIf="activeIndex == 1" class="mx-2 my-5 lg:mx-20 md:mx-10">
-  <div class="grid grid-cols-12 gap-4 py-5">
+  <div class="grid grid-cols-1 lg:grid-cols-2 1.5xl:grid-cols-3 gap-4 py-5">
     <ng-container *ngFor="let draft of drafts$; let i = index; trackBy: trackByFn;">
-      <app-draft-post
-        [post]="draft"
-        [showOptions]="(currentUser && currentUser.isWriter && (currentUser.username == draft.author || currentUser.firstName == draft.author)) ?? false"
-        (editPost)="editPost($event)"
-        (deletePost)="openDeleteDialog($event)"
-        class="col-span-12"
-      >
-      </app-draft-post>
+      <ng-container *ngIf="(favoritePosts$ | async) == false">
+        <app-draft-post
+          [post]="draft"
+          [showOptions]="(currentUser && currentUser.isWriter && (currentUser.username == draft.author || currentUser.firstName == draft.author)) ?? false"
+          (editPost)="editPost($event)"
+          (deletePost)="openDeleteDialog($event)"
+          class="col-span-12"
+        >
+        </app-draft-post>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="(favoritePosts$ | async)">
+      <ng-container *ngFor="let arr of Arr(3).fill(1)">
+        <app-blog-post-skeleton class=""></app-blog-post-skeleton>
+      </ng-container>
     </ng-container>
   </div>
 </section>
