@@ -23,6 +23,7 @@ import { BlogPost } from '../../models/blog.interface';
 import { pluck } from 'rxjs/internal/operators/pluck';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { db } from 'src/@core/indexdb/db';
 
 @Component({
   selector: 'app-add-blog',
@@ -251,8 +252,9 @@ export class AddBlogComponent implements OnInit, OnDestroy {
     this.f['blogSlug']?.setValue(this.f['blogTitle']?.value?.replace(/\s/g, '-').toLowerCase().replace(/:+/g, ''))
     if(this.editMode$.value == false) {
       this.blogService.createNewPost(this.blogPostForm.value).pipe(takeUntil(this.destroy$))
-      .subscribe((res: ApiResponse<any>) => {
+      .subscribe(async (res: ApiResponse<any>) => {
         if(!res.hasErrors()) {
+          await db.blogPostsData.clear();
           this.notif.displayNotification('Successfully created new blog post', 'Post Creation', TuiNotification.Success);
           this.creatingPost$.next(false);
           let timeout: any;
@@ -267,8 +269,9 @@ export class AddBlogComponent implements OnInit, OnDestroy {
     }
     else {
       this.blogService.updatePost(this.blogPostForm.value, this.post$.id).pipe(takeUntil(this.destroy$))
-      .subscribe((res: ApiResponse<any>) => {
+      .subscribe(async (res: ApiResponse<any>) => {
         if(!res.hasErrors()) {
+          await db.blogPostsData.clear();
           this.notif.displayNotification('Post updated successfully', 'Update Post', TuiNotification.Success);
           this.creatingPost$.next(false);
           let timeout: any;

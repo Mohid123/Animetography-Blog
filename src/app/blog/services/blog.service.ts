@@ -6,6 +6,7 @@ import { ApiService } from 'src/@core/common-services/api.service';
 import { NotificationsService } from 'src/@core/common-services/notifications.service';
 import { ApiResponse } from 'src/@core/models/api-response.model';
 import { BlogPost, PostData } from '../models/blog.interface';
+import { db } from '../../../@core/indexdb/db';
 
 type Blog = PostData | BlogPost | any
 
@@ -32,16 +33,25 @@ export class BlogService extends ApiService<Blog> {
       limit: limit,
       offset: page ? limit * page : 0,
     }
-    return this.get(`/api/blog/getAllBlogs`, param).pipe(shareReplay(), map((res: ApiResponse<Blog>) => {
-      if(!res.hasErrors()) {
-        this.showPostSpinner.next(false);
-        return res.data;
+    let data$ = this.get(`/api/blog/getAllBlogs`, param).pipe(
+      shareReplay(),
+      map((res: ApiResponse<Blog>) => {
+        if(!res.hasErrors()) {
+          this.showPostSpinner.next(false);
+          return res.data;
+        }
+        else {
+          this.showPostSpinner.next(false);
+          return this.notif.displayNotification(res.errors[0].error?.message, 'Failed to fetch posts', TuiNotification.Error)
+        }
+      })
+    );
+    data$.subscribe(value => {
+      if(page == 0) {
+        db.bulkAddPosts(value);
       }
-      else {
-        this.showPostSpinner.next(false);
-        return this.notif.displayNotification(res.errors[0].error?.message, 'Failed to fetch posts', TuiNotification.Error)
-      }
-    }))
+    })
+    return data$;
   }
 
   searchPostsByTitle(blogTitle: string): Observable<ApiResponse<Blog>> {

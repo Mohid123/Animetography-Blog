@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Inject, ViewChild, OnDestroy } from '@angular/core';
-import { Observable, map, BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Inject, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Observable, map, BehaviorSubject, Subject, takeUntil, of } from 'rxjs';
 import { BlogPost, PostData } from '../../models/blog.interface';
 import { BlogService } from '../../services/blog.service';
 import { Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { Title } from '@angular/platform-browser';
+import { db } from 'src/@core/indexdb/db';
 
 @Component({
   selector: 'app-view-blog',
@@ -19,7 +20,7 @@ import { Title } from '@angular/platform-browser';
 export class ViewBlogComponent implements OnDestroy {
   deletePostID!: string
   offset: number = 0;
-  limit: number = 4;
+  limit: number = 10;
   page: number;
   posts$!: Observable<PostData | any>;
   showSpinner$: Observable<boolean> = this.blogService.showPostSpinner.asObservable();
@@ -37,6 +38,7 @@ export class ViewBlogComponent implements OnDestroy {
     private blogService: BlogService,
     private router: Router,
     private auth: AuthService,
+    private cf: ChangeDetectorRef,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private title: Title
     ) {
@@ -51,14 +53,27 @@ export class ViewBlogComponent implements OnDestroy {
     this.title.setTitle( newTitle );
   }
 
-  fetchAllPosts() {
-    this.posts$ = this.blogService.getAllPosts(this.page, this.limit, this.offset);
+  async fetchAllPosts() {
+    let cachedPosts = await db.fetchAllPosts();
+    if(cachedPosts.length > 0) {
+      this.cf.detectChanges();
+      this.posts$ = of(cachedPosts[0]);
+      this.cf.detectChanges();
+    }
+    else {
+      this.posts$ = this.blogService.getAllPosts(this.page, this.limit, this.offset);
+    }
   }
 
-  goToPage(index: number): void {
+  goToPage(index: number) {
     this.index = index;
     this.page = index + 1;
-    this.posts$ = this.blogService.getAllPosts(this.page, this.limit, this.offset);
+    if(index > 1) {
+      this.posts$ = this.blogService.getAllPosts(this.page, 4, this.offset);
+    }
+    else {
+      this.posts$ = this.blogService.getAllPosts(this.page, this.limit, this.offset);
+    }
   }
 
   fetchPostById(id: string) {
