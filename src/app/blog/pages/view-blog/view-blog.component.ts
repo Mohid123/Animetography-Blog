@@ -116,10 +116,15 @@ export class ViewBlogComponent implements OnDestroy {
     }
   }
 
-  deletePost() {
+  async deletePost() {
     this.blogService.deletePost(this.deletePostID).pipe(takeUntil(this.destroy$))
-    .subscribe((res: any) => {
+    .subscribe(async (res: any) => {
       if(res) {
+        let cachedPosts = await db.fetchAllPosts();
+        if(cachedPosts.length > 0) {
+          cachedPosts[0].data = cachedPosts[0].data?.filter((val: any) => val._id !== this.deletePostID)
+          db.updatePosts(cachedPosts[0])
+        }
         this.fetchAllPosts()
       }
     });
