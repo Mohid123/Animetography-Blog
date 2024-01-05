@@ -61,7 +61,6 @@ export class ReadBlogComponent implements OnDestroy {
         userID: this.auth.currentUserValue?.id,
         deletedCheck: false
       }
-      console.log(payload)
       this.blogService.addPostToFavorites(payload).pipe(takeUntil(this.destroy$))
       .subscribe((res: ApiResponse<any>) => {
         if(!res.hasErrors()) {
