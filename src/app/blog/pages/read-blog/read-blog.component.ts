@@ -10,6 +10,7 @@ import { BlogService } from '../../services/blog.service';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
 import { Meta, Title } from '@angular/platform-browser';
+import Editor from 'ckeditor5/build/ckeditor';
 
 @Component({
   selector: 'app-read-blog',
@@ -18,6 +19,7 @@ import { Meta, Title } from '@angular/platform-browser';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReadBlogComponent implements OnDestroy {
+  public Editor: any = Editor;
   post$!: Observable<BlogPost | any>;
   postSummary!: string;
   showSpinner$ = this.blogService.showSpinner.asObservable();

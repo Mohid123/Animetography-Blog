@@ -25,7 +25,6 @@ import { switchMap } from 'rxjs/internal/operators/switchMap';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { db } from 'src/@core/indexdb/db';
 import Editor from 'ckeditor5/build/ckeditor';
-import { ChangeEvent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
   selector: 'app-add-blog',

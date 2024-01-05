@@ -141,7 +141,8 @@
         <hr class="h-1">
       </div>
       <!-- <tui-editor-socket class="px-2" [content]="f['blogContent'].value || 'Post Content'"></tui-editor-socket> -->
-      <div class="px-2" [innerHTML]="f['blogContent'].value || 'Post Content'"></div>
+      <!-- <div class="px-2" [innerHTML]="f['blogContent'].value || 'Post Content'"></div> -->
+      <ckeditor [editor]="Editor" [config]="{ toolbar: [ ] }" [disabled]="true" [data]="f['blogContent'].value || 'Post Content'"></ckeditor>
       <div class="px-2 py-5">
         <hr class="h-1">
       </div>

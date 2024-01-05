@@ -42,7 +42,8 @@
         <hr class="h-1">
       </div>
       <!-- <tui-editor-socket [content]="post.blogContent"></tui-editor-socket> -->
-      <div [innerHTML]="post.blogContent"></div>
+      <!-- <div [innerHTML]="post.blogContent"></div> -->
+      <ckeditor [editor]="Editor" [config]="{ toolbar: [ ] }" [disabled]="true" [data]="post.blogContent"></ckeditor>
       <div class="px-2 py-5">
         <hr class="h-1">
       </div>
