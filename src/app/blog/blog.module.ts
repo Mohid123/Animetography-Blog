@@ -16,13 +16,12 @@ import { SortComponent } from './components/sort/sort.component';
 import { TopPostComponent } from './components/top-post/top-post.component';
 import { BlogPostComponent } from './components/blog-post/blog-post.component';
 import { AddBlogComponent } from './pages/add-blog/add-blog.component';
-import { TuiEditorModule, TuiEditorSocketModule } from '@taiga-ui/addon-editor';
 import { ReadBlogComponent } from './pages/read-blog/read-blog.component';
-import { ExampleTuiYoutubeToolModule } from './pages/add-blog/youtube-tool/youtube-tool.module';
 import { BlurhashComponent } from 'src/@core/standalones/blurhash/blurhash.component';
 import { TopPostSkeletonComponent } from 'src/@core/standalones/top-post-skeleton/top-post-skeleton.component';
 import { BlogPostSkeletonComponent } from 'src/@core/standalones/blog-post-skeleton/blog-post-skeleton.component';
 import { TuiLoaderModule } from '@taiga-ui/core';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 
 
@@ -41,6 +40,7 @@ import { TuiLoaderModule } from '@taiga-ui/core';
   ],
   imports: [
     CommonModule,
+    CKEditorModule,
     BlogRoutingModule,
     NgOptimizedImage,
     TuiSidebarModule,
@@ -56,15 +56,12 @@ import { TuiLoaderModule } from '@taiga-ui/core';
     TuiLetModule,
     TuiAvatarModule,
     TuiTextAreaModule,
-    TuiEditorModule,
     TuiInputFilesModule,
-    ExampleTuiYoutubeToolModule,
     TuiTabsModule,
     BlurhashComponent,
     TopPostSkeletonComponent,
     BlogPostSkeletonComponent,
     TuiLoaderModule,
-    TuiEditorSocketModule,
     TuiPaginationModule
   ]
 })

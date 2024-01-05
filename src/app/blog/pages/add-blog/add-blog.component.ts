@@ -24,64 +24,14 @@ import { pluck } from 'rxjs/internal/operators/pluck';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { db } from 'src/@core/indexdb/db';
+import Editor from 'ckeditor5/build/ckeditor';
+import { ChangeEvent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
   selector: 'app-add-blog',
   templateUrl: './add-blog.component.html',
   styleUrls: ['./add-blog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: TUI_EDITOR_EXTENSIONS,
-      useValue: [
-        ...defaultEditorExtensions,
-        import('@taiga-ui/addon-editor/extensions/youtube').then(
-          ({Youtube}) => Youtube
-        ),
-        import('@taiga-ui/addon-editor/extensions/media').then(
-          ({TuiVideo}) => TuiVideo,
-        ),
-        import('@taiga-ui/addon-editor/extensions/media').then(
-          ({TuiSource}) => TuiSource,
-        )
-      ]
-    },
-    {
-      provide: TUI_ATTACH_FILES_LOADER,
-      deps: [],
-      useFactory:
-      () =>
-      ([file]: File[]): Observable<
-        Array<any>
-        > => {
-        const fileReader = new FileReader();
-
-        // For example, instead of uploading to a file server,
-        // we convert the result immediately into content to base64
-        fileReader.readAsDataURL(file);
-
-        return tuiTypedFromEvent(fileReader, 'load').pipe(
-          map(() => [
-            {
-              name: file.name,
-              /* base64 or link to the file on your server */
-              link: String(fileReader.result),
-              attrs: {
-                type: file.type,
-              },
-            },
-          ]),
-        );
-      },
-    },
-    {
-      provide: TUI_ATTACH_FILES_OPTIONS,
-      useValue: {
-        accept: 'video/mp4,video/x-m4v,video/*,audio/x-m4a,audio/*',
-        multiple: true,
-      },
-    },
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class AddBlogComponent implements OnInit, OnDestroy {
@@ -110,28 +60,64 @@ export class AddBlogComponent implements OnInit, OnDestroy {
       text: 'Preview',
       icon: '../../../../assets/preview.svg',
     }
-];
-
-  readonly builtInTools = [
-    TuiEditorTool.Attach,
-    TuiEditorTool.Bold,
-    TuiEditorTool.Italic,
-    TuiEditorTool.Details,
-    TuiEditorTool.Align,
-    TuiEditorTool.Img,
-    TuiEditorTool.Hilite,
-    TuiEditorTool.Link,
-    TuiEditorTool.List,
-    TuiEditorTool.Quote,
-    TuiEditorTool.MergeCells,
-    TuiEditorTool.Table,
-    TuiEditorTool.RowsColumnsManaging,
-    TuiEditorTool.Undo,
-    TuiEditorTool.Anchor,
-    TuiEditorTool.HR,
-    TuiEditorTool.Clear,
-    TuiEditorTool.Group
   ];
+  public Editor: any = Editor;
+  public editorConfig = {
+    toolbar: {
+			items: [
+				'heading',
+				'bold',
+				'underline',
+				'link',
+				'alignment',
+				'fontBackgroundColor',
+				'fontColor',
+				'fontFamily',
+				'fontSize',
+				'findAndReplace',
+				'codeBlock',
+				'code',
+				'highlight',
+				'bulletedList',
+				'numberedList',
+				'outdent',
+				'indent',
+				'imageInsert',
+				'imageUpload',
+				'blockQuote',
+				'insertTable',
+				'mediaEmbed',
+				'undo',
+				'redo',
+				'horizontalLine',
+				'specialCharacters',
+				'pageBreak',
+				'strikethrough',
+				'subscript',
+				'superscript'
+			]
+		},
+		language: 'en',
+		image: {
+			toolbar: [
+				'imageTextAlternative',
+				'toggleImageCaption',
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'linkImage'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells',
+				'tableCellProperties',
+				'tableProperties'
+			]
+		}
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -323,3 +309,81 @@ export class AddBlogComponent implements OnInit, OnDestroy {
   }
 
 }
+
+/**
+ * PROVIDERS REFERENCE EXAMPLE
+ *  providers: [
+    {
+      provide: TUI_EDITOR_EXTENSIONS,
+      useValue: [
+        ...defaultEditorExtensions,
+        import('@taiga-ui/addon-editor/extensions/youtube').then(
+          ({Youtube}) => Youtube
+        ),
+        import('@taiga-ui/addon-editor/extensions/media').then(
+          ({TuiVideo}) => TuiVideo,
+        ),
+        import('@taiga-ui/addon-editor/extensions/media').then(
+          ({TuiSource}) => TuiSource,
+        )
+      ]
+    },
+    {
+      provide: TUI_ATTACH_FILES_LOADER,
+      deps: [],
+      useFactory:
+      () =>
+      ([file]: File[]): Observable<
+        Array<any>
+        > => {
+        const fileReader = new FileReader();
+
+        // For example, instead of uploading to a file server,
+        // we convert the result immediately into content to base64
+        fileReader.readAsDataURL(file);
+
+        return tuiTypedFromEvent(fileReader, 'load').pipe(
+          map(() => [
+            {
+              name: file.name,
+              //base64 or link to the file on your server
+              link: String(fileReader.result),
+              attrs: {
+                type: file.type,
+              },
+            },
+          ]),
+        );
+      },
+    },
+    {
+      provide: TUI_ATTACH_FILES_OPTIONS,
+      useValue: {
+        accept: 'video/mp4,video/x-m4v,video/*,audio/x-m4a,audio/*',
+        multiple: true,
+      },
+    },
+  ]
+
+
+  readonly builtInTools = [
+    TuiEditorTool.Attach,
+    TuiEditorTool.Bold,
+    TuiEditorTool.Italic,
+    TuiEditorTool.Details,
+    TuiEditorTool.Align,
+    TuiEditorTool.Img,
+    TuiEditorTool.Hilite,
+    TuiEditorTool.Link,
+    TuiEditorTool.List,
+    TuiEditorTool.Quote,
+    TuiEditorTool.MergeCells,
+    TuiEditorTool.Table,
+    TuiEditorTool.RowsColumnsManaging,
+    TuiEditorTool.Undo,
+    TuiEditorTool.Anchor,
+    TuiEditorTool.HR,
+    TuiEditorTool.Clear,
+    TuiEditorTool.Group
+  ];
+ */
