@@ -155,7 +155,7 @@
     tuiButton
     type="button"
     appearance="primary"
-    class="tui-space_right-3 tui-space_left-3"
+    class="lg:tui-space_right-3 lg:tui-space_left-3 tui-space_right-2"
     (click)="publishPost()"
     [showLoader]="(creatingPost$ | async)!"
     size="m"
@@ -167,7 +167,7 @@
     tuiButton
     type="button"
     appearance="secondary"
-    class="tui-space_right-3 tui-space_left-3"
+    class="lg:tui-space_right-3 lg:tui-space_left-3 tui-space_right-2"
     (click)="savePostAsDraft()"
     [showLoader]="(creatingPost$ | async)!"
     size="m"
@@ -178,7 +178,6 @@
     tuiButton
     type="button"
     appearance="accent"
-    class="tui-space_right-3 tui-space_left-3"
     (click)="(this.f['blogTitle'].value || this.f['blogSubtitle'].value || this.f['blogContent'].value || this.f['coverImage'].value) ? cancelPost(template): navigateAway()"
     size="m"
   >
