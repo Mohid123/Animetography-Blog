@@ -1,6 +1,7 @@
 import { ApplicationRef, Component } from '@angular/core';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { concat, filter, first, interval } from 'rxjs';
+import { db } from 'src/@core/indexdb/db';
 
 function promptUser(event: VersionReadyEvent): boolean {
   return true;
@@ -29,9 +30,11 @@ export class AppComponent {
     .pipe(filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'))
     .subscribe(evt => {
       if (promptUser(evt)) {
-        // Reload the page to update to the latest version.
+        db.blogPostsData.clear();
         document.location.reload();
       }
     });
+
+    db.blogPostsData.clear();
   }
 }

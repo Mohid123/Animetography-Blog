@@ -18,10 +18,25 @@
   </ng-container>
 </tui-tabs>
 
-
-
 <section *ngIf="activeIndex === 0" class="add-section">
-  <h3 class="px-5 pb-4 text-2xl font-semibold text-white">Create New Post</h3>
+  <div class="flex justify-between">
+    <h3 class="px-5 pb-4 text-2xl font-semibold text-white">Create New Post</h3>
+    <!--Schedule Button-->
+    <button
+      tuiIconButton
+      title="Schedule Post"
+      icon="tuiIconCalendarLarge"
+      appearance="custom"
+      size="s"
+      class="bg-[#DD4C1E] text-white mr-5"
+      [tuiDropdown]="dropdownContent"
+      [tuiDropdownManual]="open"
+      [tuiDropdownDirection]="'bottom'"
+      (click)="toggleDropdown()"
+      (tuiActiveZoneChange)="onActiveZone($event)"
+    >
+    </button>
+  </div>
   <form [formGroup]="blogPostForm" class="px-5">
     <div class="pb-3">
       <tui-input
@@ -232,6 +247,26 @@
       (click)="observer.complete();"
     >
       Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #dropdownContent>
+  <tui-calendar
+    [value]="dateValue"
+    (dayClick)="onDayClick($event)"
+  ></tui-calendar>
+  <div class="pb-2 text-center">
+    <button
+      tuiButton
+      type="button"
+      appearance="custom"
+      class="tui-space_right-3 tui-space_left-3 bg-[#DD4C1E] text-white"
+      size="m"
+      (click)="schedulePost()"
+      [showLoader]="(creatingPost$ | async)!"
+    >
+      Schedule Post
     </button>
   </div>
 </ng-template>

@@ -9,7 +9,7 @@ import {
   defaultEditorExtensions}
   from '@taiga-ui/addon-editor';
 import { BehaviorSubject, map, Observable, of, Subject, takeUntil } from 'rxjs';
-import { tuiTypedFromEvent } from '@taiga-ui/cdk';
+import { TuiDay, tuiTypedFromEvent } from '@taiga-ui/cdk';
 import { MediaUploadService } from 'src/@core/common-services/media-upload.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ApiResponse } from 'src/@core/models/api-response.model';
@@ -117,6 +117,9 @@ export class AddBlogComponent implements OnInit, OnDestroy {
 			]
 		}
   };
+  dateValue: TuiDay | null = null;
+  scheduleDateTime!: number;
+  open = false;
 
   constructor(
     private fb: FormBuilder,
@@ -184,6 +187,28 @@ export class AddBlogComponent implements OnInit, OnDestroy {
 
   get f() {
     return this.blogPostForm.controls;
+  }
+
+  onDayClick(date: TuiDay): void {
+    this.dateValue = date;
+    const dateTimeStamp = new Date(
+      date?.year,
+      date?.month,
+      date?.day,
+      23,
+      59,
+      59,
+      0
+    ).getTime();
+    this.scheduleDateTime = dateTimeStamp;
+  }
+
+  toggleDropdown(): void {
+    this.open = !this.open;
+  }
+
+  onActiveZone(active: boolean): void {
+    this.open = active && this.open;
   }
 
   removeFile(): void {
@@ -284,6 +309,17 @@ export class AddBlogComponent implements OnInit, OnDestroy {
   savePostAsDraft() {
     if(this.blogPostForm.valid) {
       this.f['status']?.setValue('Draft');
+      this.createPost();
+    }
+    else {
+      this.notif.displayNotification('All fields are required', 'Create post', TuiNotification.Warning);
+    }
+  }
+
+  schedulePost() {
+    if(this.blogPostForm.valid) {
+      this.f['status']?.setValue('Scheduled');
+      this.f['postedDate']?.setValue(this.scheduleDateTime);
       this.createPost();
     }
     else {
