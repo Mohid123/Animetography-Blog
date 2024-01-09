@@ -25,6 +25,7 @@ export class ProfileComponent implements OnDestroy {
   deletePostID!: string;
   favorites$!: any;
   drafts$!: any;
+  schedules$!: any;
   page: number;
   limit: number = 12;
   offset: number = 0;
@@ -57,6 +58,9 @@ export class ProfileComponent implements OnDestroy {
         if(value?.drafts) {
           this.activeIndex = 1;
         }
+        else if(value?.scheduled) {
+          this.activeIndex = 2;
+        }
         else {
           this.activeIndex = 0;
         }
@@ -74,6 +78,12 @@ export class ProfileComponent implements OnDestroy {
       this.drafts$ = res;
       this.favoritePosts$.next(false);
     });
+
+    this.blog.getUserSchedules(this.page, this.limit, this.offset).pipe(takeUntil(this.destroy$))
+    .subscribe((res: ApiResponse<any>) => {
+      this.schedules$ = res;
+      this.favoritePosts$.next(false);
+    });
     this.initProfileForm();
   }
 
@@ -89,6 +99,10 @@ export class ProfileComponent implements OnDestroy {
     {
       text: 'Your drafts',
       icon: 'tuiIconAlignJustifyLarge',
+    },
+    {
+      text: 'Scheduled Posts',
+      icon: 'tuiIconCalendarLarge',
     }
   ];
 
@@ -191,6 +205,12 @@ export class ProfileComponent implements OnDestroy {
       this.blog.sendBlogPostForEdit = post;
       this.router.navigate(['/edit-post', post._id]);
     }
+  }
+
+  selectTab(index: number) {
+    if(index == 0) return this.activeIndex = 0;
+    if(index == 1) return this.activeIndex = 1;
+    return this.activeIndex = 2;
   }
 
   ngOnDestroy(): void {

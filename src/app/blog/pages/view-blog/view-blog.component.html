@@ -95,28 +95,29 @@
   let-observer
 >
   <div class="dialog-header">
-    <h3>Are you sure you want to delete this post?</h3>
+    <h4>Are you sure you want to delete this post?</h4>
   </div>
-  <div class="dialog-content">
+  <div class="my-2 dialog-content">
     <button
-    tuiButton
-    type="button"
-    appearance="secondary-destructive"
-    size="m"
-    class="tui-space_right-3"
-    (click)="observer.complete()"
-  >
-    On second thought...
-  </button>
-  <button
-    tuiButton
-    type="button"
-    appearance="secondary"
-    size="m"
-    (click)="observer.complete(); deletePost()"
-  >
-    Delete
-  </button>
+      tuiButton
+      type="button"
+      appearance="accent"
+      class="my-2"
+      size="m"
+      (click)="observer.complete(); deletePost()"
+    >
+      Delete
+    </button>
+    <button
+      tuiButton
+      type="button"
+      appearance="secondary"
+      size="m"
+      class="my-2 tui-space_left-3"
+      (click)="observer.complete()"
+    >
+      On second thought...
+    </button>
   </div>
 </ng-template>
 

@@ -84,6 +84,7 @@
     <a *ngIf="loginState === true" routerLink="/profile" class="w-full px-4 py-1 mb-3 text-base font-semibold text-center rounded-md hover:bg-gray-100">Profile</a>
     <a *ngIf="loginState === true" routerLink="/profile" [queryParams]="{drafts: 'true'}" class="w-full px-4 py-1 mb-3 text-base font-semibold text-center rounded-md hover:bg-gray-100">Your Drafts</a>
     <a *ngIf="loginState === true" routerLink="/profile" [queryParams]="{favs: 'true'}" class="w-full px-4 py-1 mb-3 text-base font-semibold text-center rounded-md hover:bg-gray-100">Your Favorites</a>
+    <a *ngIf="loginState === true" routerLink="/profile" [queryParams]="{scheduled: 'true'}" class="w-full px-4 py-1 mb-3 text-base font-semibold text-center rounded-md hover:bg-gray-100">Scheduled Posts</a>
     <a (click)="showDialog(template)" *ngIf="loginState === true" class="w-full px-4 py-1 font-semibold text-center text-white border border-white rounded-md cursor-pointer bg-rose-700">Logout</a>
   </div>
 </ng-template>

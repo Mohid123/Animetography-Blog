@@ -149,7 +149,7 @@
     <button
       tuiTab
       tuiRipple="var(--tui-text-01)"
-      (click)="i === 0 ? activeIndex = 0 : activeIndex = 1"
+      (click)="selectTab(i)"
     >
     <tui-svg
       class="tui-space_right-2"
@@ -204,6 +204,28 @@
   </div>
 </section>
 
+<section *ngIf="activeIndex == 2" class="mx-2 my-5 lg:mx-20 md:mx-10">
+  <div class="grid grid-cols-1 lg:grid-cols-2 1.5xl:grid-cols-3 gap-4 py-5">
+    <ng-container *ngFor="let scheduled of schedules$; let i = index; trackBy: trackByFn;">
+      <ng-container *ngIf="(favoritePosts$ | async) == false">
+        <app-draft-post
+          [post]="scheduled"
+          [showOptions]="(currentUser && currentUser.isWriter && (currentUser.username == scheduled.author || currentUser.firstName == scheduled.author)) ?? false"
+          (editPost)="editPost($event)"
+          (deletePost)="openDeleteDialog($event)"
+          class="col-span-12"
+        >
+        </app-draft-post>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="(favoritePosts$ | async)">
+      <ng-container *ngFor="let arr of Arr(3).fill(1)">
+        <app-blog-post-skeleton class=""></app-blog-post-skeleton>
+      </ng-container>
+    </ng-container>
+  </div>
+</section>
+
 <ng-template #dropdownContent>
   <div class="flex flex-col items-center justify-center mx-8 my-3">
     <span class="text-sm font-semibold cursor-pointer text-rose-600" (click)="isEditing$.next(true); toggleDropdown()">Edit profile</span>
@@ -225,27 +247,28 @@
   let-observer
 >
   <div class="dialog-header">
-    <h3>Are you sure you want to delete this post?</h3>
+    <h4>Are you sure you want to delete this post?</h4>
   </div>
-  <div class="dialog-content">
+  <div class="my-2 dialog-content">
     <button
-    tuiButton
-    type="button"
-    appearance="secondary-destructive"
-    size="m"
-    class="tui-space_right-3"
-    (click)="observer.complete()"
-  >
-    On second thought...
-  </button>
-  <button
-    tuiButton
-    type="button"
-    appearance="secondary"
-    size="m"
-    (click)="observer.complete(); deletePost()"
-  >
-    Delete!
-  </button>
+      tuiButton
+      type="button"
+      appearance="secondary"
+      class="my-2"
+      size="m"
+      (click)="observer.complete(); deletePost()"
+    >
+      Delete!
+    </button>
+    <button
+      tuiButton
+      type="button"
+      appearance="secondary-destructive"
+      size="m"
+      class="my-2 tui-space_left-3"
+      (click)="observer.complete()"
+    >
+      On second thought...
+    </button>
   </div>
 </ng-template>

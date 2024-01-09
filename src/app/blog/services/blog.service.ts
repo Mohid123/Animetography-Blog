@@ -177,7 +177,23 @@ export class BlogService extends ApiService<Blog> {
         return res.data
       }
       else {
-        return this.notif.displayNotification('Failed to fetch Drafts', 'Your Drafst', TuiNotification.Error)
+        return this.notif.displayNotification('Failed to fetch Drafts', 'Your Drafts', TuiNotification.Error)
+      }
+    }))
+  }
+
+  getUserSchedules(page: number, limit: any, offset: any): Observable<ApiResponse<Blog>> {
+    page--;
+    const params: any = {
+      limit: limit,
+      offset: page ? limit * page : 0
+    }
+    return this.get(`/api/blog/getUserScheduledPosts`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification('Failed to fetch Scheduled Posts', 'Your Scheduled Posts', TuiNotification.Error)
       }
     }))
   }

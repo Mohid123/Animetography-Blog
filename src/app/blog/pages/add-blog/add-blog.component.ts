@@ -195,9 +195,9 @@ export class AddBlogComponent implements OnInit, OnDestroy {
       date?.year,
       date?.month,
       date?.day,
-      23,
-      59,
-      59,
+      0,
+      0,
+      0,
       0
     ).getTime();
     this.scheduleDateTime = dateTimeStamp;
